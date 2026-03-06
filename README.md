@@ -1,3 +1,120 @@
 # sp3cmar
 
 Workflow skills and reviewer agents for Claude Code, Codex, and Cowork.
+
+24 skills + 8 reviewer agents that bring structured workflows to AI-assisted development: feature specs, code reviews, shipping, incident response, and more.
+
+## Installation
+
+### Claude Code (CLI)
+
+```bash
+uv tool install sp3cmar --from git+https://github.com/b3dmar/sp3cmar.git
+sp3cmar install --ai claude
+```
+
+Skills are installed as slash commands: `/sp3cmar-ship`, `/sp3cmar-review-codebase`, etc.
+
+### Codex (CLI)
+
+```bash
+sp3cmar install --ai codex
+```
+
+### Cowork (no Python required)
+
+1. Clone this repo (or download `cowork-plugin/` from a release)
+2. In Claude Desktop > Cowork > Customize > Add Plugin > point to `cowork-plugin/`
+3. Skills auto-activate based on task context
+
+### 3ngram Extensions (no Python required)
+
+Copy skills that enhance the [3ngram MCP](https://github.com/sebastianebg/engram):
+
+```bash
+cp extensions/3ngram/skills/*.md ~/.claude/commands/
+```
+
+See [`extensions/3ngram/README.md`](extensions/3ngram/README.md) for details.
+
+## Skills
+
+### Workflow (Claude Code only)
+
+| Skill | Description |
+|-------|-------------|
+| `/sp3cmar-ship` | Lint, commit, push, and create PR |
+| `/sp3cmar-done` | Session debrief and close |
+| `/sp3cmar-morning` | Morning context and priorities |
+| `/sp3cmar-post-merge` | Post-merge cascade updates |
+| `/sp3cmar-worktree` | Git worktree lifecycle |
+| `/sp3cmar-doc-audit` | Audit tracking artifacts for drift |
+| `/sp3cmar-workflow-audit` | Analyze conversations for automation |
+| `/sp3cmar-staging-audit` | Pre-merge audit |
+| `/sp3cmar-fix` | Auto-fix review findings |
+| `/sp3cmar-migrate` | Bulk codebase migration |
+| `/sp3cmar-release-notes` | Generate release notes |
+
+### Analysis (Claude Code + Cowork)
+
+| Skill | Description |
+|-------|-------------|
+| `/sp3cmar-feature` | Create PRD/spec with acceptance criteria |
+| `/sp3cmar-review-codebase` | Architecture review |
+| `/sp3cmar-review-kill` | Adversarial kill report |
+| `/sp3cmar-review-pr` | PR review for correctness and risks |
+| `/sp3cmar-docs` | Documentation authoring |
+| `/sp3cmar-breakdown` | Spec to stacked PR plan |
+| `/sp3cmar-implement` | Autonomous feature implementation |
+| `/sp3cmar-review-contract` | API contract validation |
+| `/sp3cmar-review-test` | Test quality audit |
+| `/sp3cmar-review-env` | Environment variable audit |
+| `/sp3cmar-review-deps` | Dependency health audit |
+| `/sp3cmar-review-debt` | Tech debt quantification |
+| `/sp3cmar-incident` | Incident response and postmortem |
+
+### Cowork Only
+
+| Skill | Description |
+|-------|-------------|
+| `e2e-test` | Frontend e2e testing via Playwright MCP |
+
+### 3ngram Extensions
+
+| Skill | Description |
+|-------|-------------|
+| `morning-briefing` | Session startup with 3ngram recall |
+| `session-debrief` | Session close with memory extraction |
+| `doc-audit` | Cross-ref docs with 3ngram decisions |
+
+## Agents
+
+8 reviewer agents for focused analysis:
+
+| Agent | Focus |
+|-------|-------|
+| `reviewer-correctness` | Bugs and logic errors |
+| `reviewer-hardcoded` | Hardcoded values to extract |
+| `reviewer-contract` | API contract alignment |
+| `reviewer-env` | Environment variable consistency |
+| `reviewer-test` | Test quality and coverage |
+| `reviewer-deps` | Dependency health and CVEs |
+| `reviewer-debt` | Tech debt quantification |
+| `migration-check` | Database migration safety |
+
+## CLI Reference
+
+```
+sp3cmar install [--ai claude|codex] [--list] [--clean]
+sp3cmar uninstall [--ai claude|codex] [--dry-run] [--yes]
+sp3cmar build-plugin [--output PATH]
+sp3cmar docs [SKILL]
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+MIT
