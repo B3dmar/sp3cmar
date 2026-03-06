@@ -1,6 +1,13 @@
 """Tests for template-constant alignment."""
 
-from sp3cmar.constants import AGENTS, COWORK_AGENTS, COWORK_ONLY_SKILLS, COWORK_SKILLS, SKILLS
+from sp3cmar.constants import (
+    AGENTS,
+    COWORK_AGENTS,
+    COWORK_ONLY_SKILLS,
+    COWORK_SKILLS,
+    ENGRAM_SKILLS,
+    SKILLS,
+)
 from sp3cmar.utils.paths import get_template_path
 
 
@@ -56,3 +63,21 @@ class TestCoworkAlignment:
         skills_dir = get_template_path("skills")
         for skill in COWORK_ONLY_SKILLS:
             assert (skills_dir / skill).exists(), f"Missing COWORK_ONLY template: {skill}"
+
+
+class TestEngramAlignment:
+    """Verify Engram extension templates exist."""
+
+    def test_engram_skills_have_templates(self):
+        engram_dir = get_template_path("engram")
+        for skill in ENGRAM_SKILLS:
+            assert (engram_dir / skill).exists(), f"Missing engram template: {skill}"
+
+    def test_no_orphan_engram_templates(self):
+        engram_dir = get_template_path("engram")
+        if not engram_dir.exists():
+            return
+        engram_files = {f.name for f in engram_dir.glob("*.md")}
+        expected = set(ENGRAM_SKILLS)
+        orphans = engram_files - expected
+        assert not orphans, f"Orphan engram templates: {orphans}"
