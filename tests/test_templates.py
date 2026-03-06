@@ -25,7 +25,7 @@ class TestTemplateAlignment:
     def test_no_orphan_skill_templates(self):
         skills_dir = get_template_path("skills")
         skill_files = {f.name for f in skills_dir.glob("*.md")}
-        expected = set(SKILLS)
+        expected = set(SKILLS) | set(COWORK_ONLY_SKILLS)
         orphans = skill_files - expected
         assert not orphans, f"Orphan skill templates: {orphans}"
 
@@ -51,3 +51,8 @@ class TestCoworkAlignment:
     def test_cowork_only_skills_not_in_skills(self):
         for skill in COWORK_ONLY_SKILLS:
             assert skill not in SKILLS, f"COWORK_ONLY_SKILLS entry should not be in SKILLS: {skill}"
+
+    def test_cowork_only_skills_have_templates(self):
+        skills_dir = get_template_path("skills")
+        for skill in COWORK_ONLY_SKILLS:
+            assert (skills_dir / skill).exists(), f"Missing COWORK_ONLY template: {skill}"
