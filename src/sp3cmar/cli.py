@@ -2,6 +2,7 @@
 
 import logging
 import sys
+from pathlib import Path
 
 import click
 from rich.console import Console
@@ -87,6 +88,20 @@ def docs(skill: str | None) -> None:
     from sp3cmar.commands.docs import run_docs
 
     run_docs(skill, console)
+
+
+@main.command("build-plugin")
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path),
+    default=None,
+    help="Output directory (default: ./cowork-plugin)",
+)
+def build_plugin(output: Path | None) -> None:
+    """Generate Cowork plugin directory from source templates."""
+    from sp3cmar.commands.build_plugin import run_build_plugin
+
+    run_build_plugin(output, console)
 
 
 if __name__ == "__main__":
