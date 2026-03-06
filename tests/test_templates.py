@@ -1,6 +1,6 @@
 """Tests for template-constant alignment."""
 
-from sp3cmar.constants import AGENTS, SKILLS
+from sp3cmar.constants import AGENTS, COWORK_AGENTS, COWORK_ONLY_SKILLS, COWORK_SKILLS, SKILLS
 from sp3cmar.utils.paths import get_template_path
 
 
@@ -35,3 +35,19 @@ class TestTemplateAlignment:
         expected = set(AGENTS)
         orphans = agent_files - expected
         assert not orphans, f"Orphan agent templates: {orphans}"
+
+
+class TestCoworkAlignment:
+    """Verify Cowork constants are subsets of core constants."""
+
+    def test_cowork_skills_subset_of_skills(self):
+        for skill in COWORK_SKILLS:
+            assert skill in SKILLS, f"COWORK_SKILLS entry not in SKILLS: {skill}"
+
+    def test_cowork_agents_subset_of_agents(self):
+        for agent in COWORK_AGENTS:
+            assert agent in AGENTS, f"COWORK_AGENTS entry not in AGENTS: {agent}"
+
+    def test_cowork_only_skills_not_in_skills(self):
+        for skill in COWORK_ONLY_SKILLS:
+            assert skill not in SKILLS, f"COWORK_ONLY_SKILLS entry should not be in SKILLS: {skill}"
