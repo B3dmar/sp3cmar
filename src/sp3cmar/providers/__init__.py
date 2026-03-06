@@ -3,10 +3,12 @@
 from sp3cmar.providers.base import Provider
 from sp3cmar.providers.claude import ClaudeProvider
 from sp3cmar.providers.codex import CodexProvider
+from sp3cmar.providers.cowork import CoworkProvider
 
 _PROVIDERS: dict[str, Provider] = {
     "claude": ClaudeProvider(),
     "codex": CodexProvider(),
+    "cowork": CoworkProvider(),
 }
 
 
