@@ -5,7 +5,7 @@ from pathlib import Path
 
 from click.testing import CliRunner
 
-from sp3cmar.constants import COWORK_AGENTS, COWORK_SKILLS
+from sp3cmar.constants import COWORK_ONLY_SKILLS
 
 
 def test_build_plugin_creates_directory(tmp_path: Path) -> None:
@@ -19,7 +19,7 @@ def test_build_plugin_creates_directory(tmp_path: Path) -> None:
     assert (output / ".claude-plugin" / "plugin.json").exists()
 
 
-def test_build_plugin_creates_skills(tmp_path: Path) -> None:
+def test_build_plugin_creates_e2e_skill(tmp_path: Path) -> None:
     from sp3cmar.cli import main
 
     runner = CliRunner()
@@ -27,13 +27,13 @@ def test_build_plugin_creates_skills(tmp_path: Path) -> None:
     result = runner.invoke(main, ["build-plugin", "--output", str(output)])
     assert result.exit_code == 0
 
-    for skill in COWORK_SKILLS:
+    for skill in COWORK_ONLY_SKILLS:
         skill_name = skill.removesuffix(".md")
         skill_path = output / "skills" / skill_name / "SKILL.md"
         assert skill_path.exists(), f"Missing skill: {skill_name}"
 
 
-def test_build_plugin_creates_agents(tmp_path: Path) -> None:
+def test_build_plugin_no_agents(tmp_path: Path) -> None:
     from sp3cmar.cli import main
 
     runner = CliRunner()
@@ -41,10 +41,10 @@ def test_build_plugin_creates_agents(tmp_path: Path) -> None:
     result = runner.invoke(main, ["build-plugin", "--output", str(output)])
     assert result.exit_code == 0
 
-    for agent in COWORK_AGENTS:
-        agent_name = agent.removesuffix(".md")
-        agent_path = output / "agents" / agent_name / "AGENT.md"
-        assert agent_path.exists(), f"Missing agent: {agent_name}"
+    agents_dir = output / "agents"
+    if agents_dir.exists():
+        agent_dirs = list(agents_dir.iterdir())
+        assert agent_dirs == [], f"Unexpected agents: {agent_dirs}"
 
 
 def test_build_plugin_manifest_valid(tmp_path: Path) -> None:

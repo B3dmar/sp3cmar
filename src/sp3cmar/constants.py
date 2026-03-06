@@ -147,32 +147,9 @@ SKILL_CATEGORIES: dict[str, list[str]] = {
     "Ops": ["incident.md"],
 }
 
-COWORK_SKILLS = [
-    "feature.md",
-    "review-codebase.md",
-    "review-kill.md",
-    "review-pr.md",
-    "docs.md",
-    "breakdown.md",
-    "implement.md",
-    "review-contract.md",
-    "review-test.md",
-    "review-env.md",
-    "review-deps.md",
-    "review-debt.md",
-    "incident.md",
-]
+COWORK_SKILLS: list[str] = []
 
-COWORK_AGENTS = [
-    "reviewer-correctness.md",
-    "reviewer-hardcoded.md",
-    "reviewer-contract.md",
-    "reviewer-env.md",
-    "reviewer-test.md",
-    "reviewer-deps.md",
-    "reviewer-debt.md",
-    "migration-check.md",
-]
+COWORK_AGENTS: list[str] = []
 
 COWORK_ONLY_SKILLS = [
     "e2e-test.md",

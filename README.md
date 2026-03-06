@@ -55,7 +55,7 @@ See [`extensions/3ngram/README.md`](extensions/3ngram/README.md) for details.
 | `/sp3cmar-migrate` | Bulk codebase migration |
 | `/sp3cmar-release-notes` | Generate release notes |
 
-### Analysis (Claude Code + Cowork)
+### Analysis (Claude Code only)
 
 | Skill | Description |
 |-------|-------------|
@@ -73,7 +73,7 @@ See [`extensions/3ngram/README.md`](extensions/3ngram/README.md) for details.
 | `/sp3cmar-review-debt` | Tech debt quantification |
 | `/sp3cmar-incident` | Incident response and postmortem |
 
-### Cowork Only
+### Cowork
 
 | Skill | Description |
 |-------|-------------|
