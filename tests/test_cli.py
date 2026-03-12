@@ -12,3 +12,4 @@ def test_help_lists_core_commands() -> None:
     assert "install" in result.output
     assert "uninstall" in result.output
     assert "docs" in result.output
+    assert "catalog" in result.output

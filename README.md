@@ -2,7 +2,7 @@
 
 Workflow skills and reviewer agents for Claude Code, Codex, and Cowork.
 
-24 skills + 8 reviewer agents that bring structured workflows to AI-assisted development: feature specs, code reviews, shipping, incident response, and more.
+26 skills + 8 reviewer agents that bring structured workflows to AI-assisted development: feature specs, code reviews, shipping, incident response, technical SEO/GEO, and more.
 
 ## Installation
 
@@ -64,6 +64,7 @@ See [`extensions/3ngram/README.md`](extensions/3ngram/README.md) for details.
 | `/sp3cmar-review-kill` | Adversarial kill report |
 | `/sp3cmar-review-pr` | PR review for correctness and risks |
 | `/sp3cmar-docs` | Documentation authoring |
+| `/sp3cmar-seo-geo` | Technical SEO/GEO audit for docs, sites, and AI-answer visibility |
 | `/sp3cmar-breakdown` | Spec to stacked PR plan |
 | `/sp3cmar-implement` | Autonomous feature implementation |
 | `/sp3cmar-review-contract` | API contract validation |
@@ -78,6 +79,7 @@ See [`extensions/3ngram/README.md`](extensions/3ngram/README.md) for details.
 | Skill | Description |
 |-------|-------------|
 | `e2e-test` | Frontend e2e testing via Playwright MCP |
+| `gsc-audit` | Google Search Console audit and reporting |
 
 ### 3ngram Extensions
 
@@ -107,6 +109,7 @@ See [`extensions/3ngram/README.md`](extensions/3ngram/README.md) for details.
 ```
 sp3cmar install [--ai claude|codex] [--list] [--clean]
 sp3cmar uninstall [--ai claude|codex] [--dry-run] [--yes]
+sp3cmar catalog [--output PATH]
 sp3cmar build-plugin [--output PATH]
 sp3cmar docs [SKILL]
 ```

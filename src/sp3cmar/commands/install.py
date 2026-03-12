@@ -8,6 +8,7 @@ from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 
+from sp3cmar.catalog import SKILL_SPECS_BY_FILENAME
 from sp3cmar.constants import AGENTS, SKILL_CATEGORIES, SKILLS, agent_info, skill_info
 from sp3cmar.providers import get_provider
 from sp3cmar.providers.base import Provider
@@ -200,14 +201,23 @@ def _detect_stale_artifacts(
 def _list_skills(template_dir: Path, console: Console) -> None:
     """List available skills without installing."""
     table = Table(title="Sp3cMar Skills")
-    table.add_column("Skill", style="cyan")
-    table.add_column("Command", style="green")
+    table.add_column("Skill", style="cyan", no_wrap=True)
+    table.add_column("Command", style="green", no_wrap=True)
+    table.add_column("Providers", style="magenta", no_wrap=True)
+    table.add_column("Requirements", style="yellow")
     table.add_column("Description")
 
     for skill in SKILLS:
         cmd, desc = skill_info.get(skill, ("?", "?"))
         exists = "\u2713" if (template_dir / skill).exists() else "\u2717"
-        table.add_row(f"{exists} {skill}", cmd, desc)
+        spec = SKILL_SPECS_BY_FILENAME[skill]
+        table.add_row(
+            f"{exists} {skill}",
+            cmd,
+            ", ".join(spec.providers),
+            spec.requirements_summary(),
+            desc,
+        )
 
     console.print(table)
 

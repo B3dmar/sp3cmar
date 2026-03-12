@@ -25,10 +25,11 @@ class TestInstallSkills:
         assert "review-codebase" in result.output
         assert "review-kill" in result.output
         assert "review-pr" in result.output
+        assert "seo-geo" in result.output
         assert "project-constitute" not in result.output
 
     def test_skills_list_complete(self):
-        """SKILLS list has expected count (11 skills)."""
+        """SKILLS list has expected count."""
         from sp3cmar.constants import SKILLS
 
         expected_skills = [
@@ -63,12 +64,14 @@ class TestInstallSkills:
             "review-deps.md",
             # Ops
             "incident.md",
+            # Growth
+            "seo-geo.md",
         ]
 
         for skill in expected_skills:
             assert skill in SKILLS, f"Missing skill: {skill}"
 
-        assert len(SKILLS) == 24
+        assert len(SKILLS) == 25
 
     def test_skill_info_complete(self):
         """All skills in SKILLS have entries in skill_info."""
