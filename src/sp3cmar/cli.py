@@ -90,6 +90,20 @@ def docs(skill: str | None) -> None:
     run_docs(skill, console)
 
 
+@main.command()
+@click.option(
+    "--output",
+    type=click.Path(path_type=Path),
+    default=None,
+    help="Write catalog JSON to a file instead of stdout",
+)
+def catalog(output: Path | None) -> None:
+    """Export the machine-readable Sp3cMar catalog as JSON."""
+    from sp3cmar.commands.catalog import run_catalog
+
+    run_catalog(output, console)
+
+
 @main.command("build-plugin")
 @click.option(
     "--output",
