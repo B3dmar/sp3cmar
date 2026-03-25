@@ -38,6 +38,11 @@ Detect the project's lint tooling and run checks on changed files only:
   npx tsc --noEmit
   ```
 - **Both** (monorepo): run each in its subdirectory
+- **Generated types** (if a `generate:api-types` script exists in `package.json`):
+  ```
+  npm run generate:api-types
+  ```
+  If the generated file changed, stage it automatically alongside other changes.
 
 If any check fails, fix the issues and re-run. Do NOT skip failures.
 
