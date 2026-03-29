@@ -1,8 +1,8 @@
 ---
-description: Git worktree lifecycle — create, list, or tear down parallel workspaces
+description: Git worktree lifecycle — create, list, validate, or tear down parallel workspaces
 ---
 
-Manage git worktrees for parallel development. Each worktree gets its own branch and working directory.
+Manage git worktrees for parallel development. Worktrees live inside the repo at `.worktrees/`.
 
 ## Arguments
 
@@ -12,48 +12,51 @@ Manage git worktrees for parallel development. Each worktree gets its own branch
 - `list` — show all active worktrees
 - `stale` — find worktrees with no recent commits
 - `plan [N]` — generate batched worktree prompts from roadmap/issues/commitments (default N=6)
+- `validate` — check batch status: PR states, CI, remaining work
 
 ## Behavior
 
 ### `start <branch-name> [base]`
 
-1. Determine repo name: `basename $(git rev-parse --show-toplevel)`
-2. Fetch latest from remote: `git fetch origin <base>`
-3. Create worktree:
+1. Fetch latest from remote: `git fetch origin <base>`
+2. Create worktree:
    ```
-   git worktree add ../worktrees/<repo>-<branch-name> -b <branch-name> origin/<base>
+   mkdir -p .worktrees/$(dirname <branch-name>)
+   git worktree add .worktrees/<branch-name> -b <branch-name> origin/<base>
    ```
-4. Install dependencies in the new worktree:
+3. Install dependencies in the new worktree:
    - If `backend/pyproject.toml` exists: `cd backend && uv sync`
    - If `frontend/package.json` exists: `cd frontend && npm ci`
    - If root `pyproject.toml` exists: `uv sync`
    - If root `package.json` exists: `npm ci`
+4. If an active batch manifest exists (`sp3cmar/worktree-batch-*.md`), update the matching row status to `in-progress`
 5. Report:
    ```
-   Worktree ready: ../worktrees/<repo>-<branch-name>
+   Worktree ready: .worktrees/<branch-name>
    Branch: <branch-name> (from <base>)
 
    To start working:
-     cd ../worktrees/<repo>-<branch-name>
+     cd .worktrees/<branch-name>
      claude
    ```
 
 ### `done <branch-name>`
 
-1. Determine repo name from current repo
-2. Remove worktree:
+1. Remove worktree:
    ```
-   git worktree remove ../worktrees/<repo>-<branch-name>
+   git worktree remove .worktrees/<branch-name>
    ```
+   If `.worktrees/<branch-name>` does not exist, try the old location `../worktrees/<repo>-<branch-name>` as a fallback.
    If it has uncommitted changes, warn the user and ask for confirmation before `--force`
-3. Prune stale references: `git worktree prune`
-4. Clean empty parent directories:
+2. Prune stale references: `git worktree prune`
+3. Clean empty parent directories:
    ```
-   find ../worktrees -maxdepth 2 -type d -empty -delete
+   find .worktrees -maxdepth 2 -type d -empty -delete
    ```
-5. Check if branch was merged:
+4. Check if branch was merged:
    - If merged to staging/main: offer to delete remote branch with `git push origin --delete <branch>`
    - If not merged: warn and do NOT delete
+5. If a batch manifest exists, update the matching row status to `merged` or `closed`
 
 ### `list`
 
@@ -94,3 +97,56 @@ Generate N batched worktree prompts (default: 6) by cross-referencing available 
    ```
 
 4. Present the full plan and ask for confirmation before creating any worktrees
+
+5. **Write batch manifest** to `sp3cmar/worktree-batch-YYYY-MM-DD.md`:
+   ```markdown
+   # Worktree Batch — YYYY-MM-DD
+
+   | # | Branch | Items | Tests | Status | PR |
+   |---|--------|-------|-------|--------|----|
+   | 1 | fix/mobile-ux | #42, roadmap:UX | browser | pending | - |
+   | 2 | chore/security | roadmap:Security | full suite | pending | - |
+
+   ## Dependencies
+   - List any cross-worktree dependencies (stacked PRs, API producers/consumers)
+   - "None" if all worktrees are independent
+
+   ## Validation Checklist
+   - [ ] All PRs merged to staging
+   - [ ] CI green on staging after all merges
+   - [ ] Integration tests pass (if cross-worktree deps exist)
+   - [ ] Roadmap updated
+   ```
+
+   Create the `sp3cmar/` directory if it does not exist.
+
+### `validate`
+
+Check the status of the current worktree batch:
+
+1. Find the latest manifest: `ls -t sp3cmar/worktree-batch-*.md | head -1`
+   - If no manifest found: "No active worktree batch. Run `/sp3cmar-worktree plan` first."
+2. For each row in the manifest table:
+   - Check PR status: `gh pr list --head <branch> --json number,state,statusCheckRollup,mergeable`
+   - Check if worktree still exists: `git worktree list`
+   - Update status: `pending` / `in-progress` / `pr-open` / `ci-failing` / `merged` / `closed`
+   - Update PR column with PR number if found
+3. Output a summary:
+   ```
+   ## Batch Status — YYYY-MM-DD
+
+   | # | Branch | Status | PR | CI |
+   |---|--------|--------|----|----|
+   | 1 | fix/mobile-ux | merged | #42 | pass |
+   | 2 | chore/security | pr-open | #43 | failing |
+
+   ### Action Items
+   - chore/security: CI failing — run `gh run view --log-failed` to diagnose
+   - 2/3 PRs merged — 1 remaining
+
+   ### Ready to close batch?
+   - [ ] All PRs merged
+   - [x] Integration tests (no cross-worktree deps)
+   ```
+4. If all PRs are merged: suggest running `/sp3cmar-post-merge` for each and closing the batch
+5. Update the manifest file in-place with current statuses
