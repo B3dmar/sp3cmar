@@ -10,8 +10,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v4
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v6
       - run: uv sync --group dev
       - run: uv run ruff check
       - run: uv run ruff format --check
@@ -19,24 +19,24 @@ jobs:
   typecheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v4
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v6
       - run: uv sync --group dev
       - run: uv run mypy --strict src/
 
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v4
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v6
       - run: uv sync --group dev
       - run: uv run pytest --cov=sp3cmar --cov-report=term-missing
 
   cowork-sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v4
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v6
       - run: uv sync --group dev
       - name: Check cowork-plugin is up to date
         run: |
@@ -46,7 +46,7 @@ jobs:
   extensions-sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Check extensions/3ngram/skills matches templates
         run: |
           diff -r src/sp3cmar/templates/engram/ extensions/3ngram/skills/
