@@ -215,7 +215,14 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         description="Unified code review — run one or all review types (all, pr, codebase, kill, test, debt, deps, env, contract)",
         category="Spec & Review",
         providers=("claude", "codex"),
-        triggers=("review", "code review", "audit", "PR review", "architecture review", "kill report"),
+        triggers=(
+            "review",
+            "code review",
+            "audit",
+            "PR review",
+            "architecture review",
+            "kill report",
+        ),
         tags=("review",),
     ),
     SkillSpec(
@@ -286,6 +293,23 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         requires_tools=("web", "git"),
         tags=("docs", "growth", "search"),
     ),
+    SkillSpec(
+        slug="ux-audit",
+        command="/sp3cmar-ux-audit",
+        description="Full-stack UI/UX audit — schema, components, design, landing page, coverage gaps",
+        category="Spec & Review",
+        providers=("claude", "codex"),
+        triggers=(
+            "UX audit",
+            "UI audit",
+            "design audit",
+            "component inventory",
+            "coverage matrix",
+            "frontend audit",
+        ),
+        requires_tools=("git",),
+        tags=("audit", "ux", "frontend"),
+    ),
 )
 
 COWORK_ONLY_SKILL_SPECS: tuple[SkillSpec, ...] = (
@@ -320,7 +344,11 @@ COWORK_ONLY_SKILL_SPECS: tuple[SkillSpec, ...] = (
 AGENT_SPECS: tuple[AgentSpec, ...] = (
     AgentSpec("feature", "Feature", "Create PRD/spec artifacts with acceptance criteria"),
     AgentSpec("review-pr", "Review PR", "Orchestrator: PR review with multi-agent dispatch"),
-    AgentSpec("review-codebase", "Review Codebase", "Orchestrator: architecture review with 7 sub-reviewers"),
+    AgentSpec(
+        "review-codebase",
+        "Review Codebase",
+        "Orchestrator: architecture review with 7 sub-reviewers",
+    ),
     AgentSpec("review-kill", "Review Kill", "Orchestrator: adversarial kill case with 6 teams"),
     AgentSpec("docs", "Docs", "Create and maintain high-quality, non-duplicative docs"),
     AgentSpec(
