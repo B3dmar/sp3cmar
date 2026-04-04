@@ -46,7 +46,7 @@ If the PR is not merged, STOP and inform the user.
 
 ### 5. Resolve Engram commitments
 
-- Query Engram MCP `commitments()` for open commitments
+- Read Engram MCP resource `engram://commitments` for open commitments
 - Match commitments to the shipped work (by topic, issue number, or keyword)
 - Resolve matched commitments using `resolve()` tool
 - If Engram MCP is not connected, skip this step and note it

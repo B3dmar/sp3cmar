@@ -6,13 +6,13 @@ Skills and patterns that extend the [3ngram MCP](https://github.com/sebastianebg
 
 ### Skills (`skills/`)
 
-Ready-to-use Claude Code skills that depend on 3ngram MCP tools:
+Ready-to-use Claude Code skills that depend on 3ngram MCP tools and resources:
 
 | Skill | 3ngram Tools Used | Description |
 |-------|-------------------|-------------|
-| `morning-briefing.md` | `overdue`, `blockers`, `commitments`, `recall` | Session startup with full context |
-| `session-debrief.md` | `remember`, `resolve`, `commitments` | Session close with memory extraction |
-| `doc-audit.md` | `commitments`, `search` | Cross-ref docs with tracked decisions |
+| `morning-briefing.md` | `engram://overdue`, `engram://blockers`, `engram://commitments`, `search_memories` | Session startup with full context |
+| `session-debrief.md` | `remember`, `resolve`, `engram://commitments` | Session close with memory extraction |
+| `doc-audit.md` | `engram://commitments`, `search_memories` | Cross-ref docs with tracked decisions |
 
 ### Examples (`examples/`)
 
@@ -20,7 +20,7 @@ Cookbook patterns for building your own 3ngram-powered skills:
 
 | Example | Description |
 |---------|-------------|
-| `custom-recall.md` | How to build skills that use `recall` and `search` |
+| `custom-recall.md` | How to build skills that use `search_memories`, `search_content`, and resources |
 | `memory-hooks.md` | Hook patterns for auto-capturing memories |
 
 ## Installation

@@ -78,7 +78,7 @@ Generate N batched worktree prompts (default: 6) by cross-referencing available 
 1. **Gather sources** (in parallel):
    - Project roadmap: scan for open `- [ ]` items in the project's `roadmap.md`
    - GitHub issues: `gh issue list --state open --limit 20 --json number,title,labels,milestone`
-   - 3ngram commitments: query `commitments()` and `blockers()` tools
+   - 3ngram commitments: read `engram://commitments` and `engram://blockers` resources
    - Existing worktrees: `git worktree list` to avoid duplicating in-flight work
 
 2. **Group into batches**:
