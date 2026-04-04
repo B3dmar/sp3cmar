@@ -56,13 +56,13 @@ def test_install_codex_writes_valid_frontmatter(tmp_path, monkeypatch):
     result = runner.invoke(main, ["install", "--ai", "codex"])
     assert result.exit_code == 0
 
-    skill_file = tmp_path / ".codex" / "skills" / "sp3cmar-review-codebase" / "SKILL.md"
+    skill_file = tmp_path / ".codex" / "skills" / "sp3cmar-review" / "SKILL.md"
     content = skill_file.read_text()
     assert content.startswith("---\n")
-    assert "name: sp3cmar-review-codebase" in content
+    assert "name: sp3cmar-review" in content
     assert "description:" in content
 
-    agent_file = tmp_path / ".codex" / "agents" / "sp3cmar-review-codebase.toml"
+    agent_file = tmp_path / ".codex" / "agents" / "sp3cmar-review-pr.toml"
     agent_content = agent_file.read_text()
     assert 'description = "' in agent_content
     assert 'developer_instructions = """' in agent_content

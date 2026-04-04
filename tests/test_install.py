@@ -22,9 +22,7 @@ class TestInstallSkills:
 
         assert "docs" in result.output
         assert "feature" in result.output
-        assert "review-codebase" in result.output
-        assert "review-kill" in result.output
-        assert "review-pr" in result.output
+        assert "review" in result.output
         assert "seo-geo" in result.output
         assert "project-constitute" not in result.output
 
@@ -45,33 +43,25 @@ class TestInstallSkills:
             "fix.md",
             "migrate.md",
             # Spec & review
-            "docs.md",
-            "review-codebase.md",
-            "review-kill.md",
-            "review-pr.md",
             "feature.md",
+            "review.md",
+            "docs.md",
             # Plan & build
             "breakdown.md",
             "implement.md",
-            "review-contract.md",
-            # Review
-            "review-test.md",
             # Ship
             "release-notes.md",
-            "review-env.md",
-            # Maintain
-            "review-debt.md",
-            "review-deps.md",
             # Ops
             "incident.md",
             # Growth
             "seo-geo.md",
+            "ux-audit.md",
         ]
 
         for skill in expected_skills:
             assert skill in SKILLS, f"Missing skill: {skill}"
 
-        assert len(SKILLS) == 25
+        assert len(SKILLS) == 19
 
     def test_skill_info_complete(self):
         """All skills in SKILLS have entries in skill_info."""
