@@ -32,13 +32,13 @@ For each PR:
 
 Skip this step if `--skip-engram` is passed or if Engram MCP is not connected.
 
-Query Engram for project-related context:
-- `blockers()` — active blockers
-- `commitments()` — open commitments
-- `overdue()` — overdue items
-- `stale_commitments()` — stale commitments
+Read Engram MCP resources for project-related context:
+- `engram://blockers` — active blockers
+- `engram://commitments` — open commitments
+- `engram://overdue` — overdue items
+- `engram://stale` — stale commitments
 
-Extract anything that affects merge readiness and list it.
+Filter to the current project before extracting anything that affects merge readiness.
 
 ### 3. Staging ↔ main delta
 

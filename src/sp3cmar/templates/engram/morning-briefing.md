@@ -1,5 +1,5 @@
 ---
-description: Morning session startup with 3ngram recall, commitments, and priorities
+description: Morning session startup with 3ngram context, commitments, and priorities
 ---
 
 # Morning Briefing (3ngram-Enhanced)
@@ -9,15 +9,15 @@ Start a new working session by loading context from 3ngram memory.
 ## Steps
 
 ### 1. Session Briefing
-Call `mcp__3ngram__status` to check 3ngram connection, then:
-- `mcp__3ngram__overdue` — show any overdue commitments
-- `mcp__3ngram__blockers` — show active blockers
-- `mcp__3ngram__commitments` — show open commitments
-- `mcp__3ngram__stale_commitments` — flag anything stale (7d+)
+Call `mcp__3ngram__status` to check 3ngram connection, then read:
+- `engram://overdue` — show any overdue commitments
+- `engram://blockers` — show active blockers
+- `engram://commitments` — show open commitments
+- `engram://stale` — flag anything stale (7d+)
 
 ### 2. Recent Context
-- `mcp__3ngram__recall` with query matching the current project — retrieve recent decisions, patterns, and context
-- `mcp__3ngram__suggested_context` — get AI-suggested relevant memories
+- `mcp__3ngram__search_memories` with a topic matching the current project — retrieve recent decisions, patterns, and context
+- `engram://suggested-context` — get proactive relevant context
 
 ### 3. Project Status
 - Check `git log --oneline -10` for recent commits

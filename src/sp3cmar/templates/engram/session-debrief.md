@@ -29,7 +29,7 @@ Identify and classify memories from this session:
 - Use `mcp__3ngram__remember` with classification `commitment`
 
 ### 3. Resolve Completed Items
-- `mcp__3ngram__commitments` — check open commitments
+- `engram://commitments` — check open commitments
 - For any completed during this session: `mcp__3ngram__resolve` with the memory ID
 
 ### 4. Session Summary

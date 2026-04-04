@@ -21,7 +21,7 @@ Run in parallel:
 - **Roadmap**: Read `roadmap.md` (or equivalent). Extract all checkbox items with their status (done/open) and any issue references
 - **Backlog**: Read `backlog.md` (if exists). Extract entries with issue references
 - **GitHub issues**: `gh issue list --state all --limit 100 --json number,title,state,labels`
-- **Engram commitments**: Query `commitments()` and `stale_commitments()` via MCP
+- **Engram commitments**: Read `engram://commitments` and `engram://stale` via MCP resources
 
 ### 2. Cross-reference
 

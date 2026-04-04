@@ -85,7 +85,7 @@ See [`extensions/3ngram/README.md`](extensions/3ngram/README.md) for details.
 
 | Skill | Description |
 |-------|-------------|
-| `morning-briefing` | Session startup with 3ngram recall |
+| `morning-briefing` | Session startup with 3ngram context |
 | `session-debrief` | Session close with memory extraction |
 | `doc-audit` | Cross-ref docs with 3ngram decisions |
 

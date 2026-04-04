@@ -26,10 +26,10 @@ If not in seb-life context: skip this step.
 Run these in parallel where possible:
 
 - **Recent commits**: `git log --oneline --since="yesterday" --all` across the current repo
-- **Open commitments**: Query Engram MCP `commitments()` tool for open items
-- **Blockers**: Query Engram MCP `blockers()` tool
-- **Overdue items**: Query Engram MCP `overdue()` tool
-- **Stale commitments**: Query Engram MCP `stale_commitments()` tool
+- **Open commitments**: Read Engram MCP resource `engram://commitments`
+- **Blockers**: Read Engram MCP resource `engram://blockers`
+- **Overdue items**: Read Engram MCP resource `engram://overdue`
+- **Stale commitments**: Read Engram MCP resource `engram://stale`
 
 If Engram MCP is not connected, skip memory queries and note that context is limited.
 

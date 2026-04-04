@@ -404,7 +404,7 @@ AGENT_SPECS: tuple[AgentSpec, ...] = (
 ENGRAM_EXTENSION_SPECS: tuple[ExtensionSpec, ...] = (
     ExtensionSpec(
         slug="morning-briefing",
-        description="Session startup with 3ngram recall",
+        description="Session startup with 3ngram context",
         channel="engram",
         providers=("claude",),
         requires_mcp=("3ngram",),
