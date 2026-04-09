@@ -51,12 +51,7 @@ If the PR is not merged, STOP and inform the user.
 - Resolve matched commitments using `resolve()` tool
 - If Engram MCP is not connected, skip this step and note it
 
-### 6. Update daily note (if in seb-life context)
-
-- Add a line to today's daily note: `- [x] Merged PR #<N>: <title>`
-- If no daily note exists for today, skip
-
-### 7. Summary
+### 6. Summary
 
 Output what was updated:
 ```
@@ -65,7 +60,6 @@ Output what was updated:
 - Roadmap: [N items checked off/no matches]
 - Issues closed: [list or none]
 - Commitments resolved: [list or none]
-- Daily note: [updated/skipped]
 ```
 
 If `--dry-run`, show what would be changed without writing.

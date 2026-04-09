@@ -2,7 +2,7 @@
 
 Workflow skills and reviewer agents for Claude Code, Codex, and Cowork.
 
-26 skills + 8 reviewer agents that bring structured workflows to AI-assisted development: feature specs, code reviews, shipping, incident response, technical SEO/GEO, and more.
+24 skills + 13 agents that bring structured workflows to AI-assisted development: feature specs, code reviews, shipping, incident response, technical SEO/GEO, and more.
 
 ## Installation
 
@@ -13,7 +13,7 @@ uv tool install sp3cmar --from git+https://github.com/b3dmar/sp3cmar.git
 sp3cmar install --ai claude
 ```
 
-Skills are installed as slash commands: `/sp3cmar-ship`, `/sp3cmar-review-codebase`, etc.
+Skills are installed as slash commands: `/sp3cmar-ship`, `/sp3cmar-review`, etc.
 
 ### Codex (CLI)
 
@@ -37,9 +37,25 @@ cp extensions/3ngram/skills/*.md ~/.claude/commands/
 
 See [`extensions/3ngram/README.md`](extensions/3ngram/README.md) for details.
 
+### Update
+
+```bash
+uv tool upgrade sp3cmar
+sp3cmar install
+```
+
+Only changed skills are overwritten; unchanged skills are skipped.
+
+### Uninstall
+
+```bash
+sp3cmar uninstall --yes
+uv tool uninstall sp3cmar
+```
+
 ## Skills
 
-### Workflow (Claude Code only)
+### Workflow
 
 | Skill | Description |
 |-------|-------------|
@@ -55,23 +71,17 @@ See [`extensions/3ngram/README.md`](extensions/3ngram/README.md) for details.
 | `/sp3cmar-migrate` | Bulk codebase migration |
 | `/sp3cmar-release-notes` | Generate release notes |
 
-### Analysis (Claude Code only)
+### Analysis
 
 | Skill | Description |
 |-------|-------------|
 | `/sp3cmar-feature` | Create PRD/spec with acceptance criteria |
-| `/sp3cmar-review-codebase` | Architecture review |
-| `/sp3cmar-review-kill` | Adversarial kill report |
-| `/sp3cmar-review-pr` | PR review for correctness and risks |
+| `/sp3cmar-review` | Unified code review (sub-types: `all`, `pr`, `codebase`, `kill`, `test`, `debt`, `deps`, `env`, `contract`) |
 | `/sp3cmar-docs` | Documentation authoring |
-| `/sp3cmar-seo-geo` | Technical SEO/GEO audit for docs, sites, and AI-answer visibility |
+| `/sp3cmar-seo-geo` | Technical SEO/GEO audit |
+| `/sp3cmar-ux-audit` | Full-stack UI/UX audit |
 | `/sp3cmar-breakdown` | Spec to stacked PR plan |
 | `/sp3cmar-implement` | Autonomous feature implementation |
-| `/sp3cmar-review-contract` | API contract validation |
-| `/sp3cmar-review-test` | Test quality audit |
-| `/sp3cmar-review-env` | Environment variable audit |
-| `/sp3cmar-review-deps` | Dependency health audit |
-| `/sp3cmar-review-debt` | Tech debt quantification |
 | `/sp3cmar-incident` | Incident response and postmortem |
 
 ### Cowork
@@ -91,10 +101,15 @@ See [`extensions/3ngram/README.md`](extensions/3ngram/README.md) for details.
 
 ## Agents
 
-8 reviewer agents for focused analysis:
+5 orchestrator agents and 8 focused reviewers:
 
 | Agent | Focus |
 |-------|-------|
+| `feature` | PRD/spec creation |
+| `review-pr` | PR review orchestrator |
+| `review-codebase` | Architecture review orchestrator |
+| `review-kill` | Adversarial kill case orchestrator |
+| `docs` | Documentation authoring |
 | `reviewer-correctness` | Bugs and logic errors |
 | `reviewer-hardcoded` | Hardcoded values to extract |
 | `reviewer-contract` | API contract alignment |

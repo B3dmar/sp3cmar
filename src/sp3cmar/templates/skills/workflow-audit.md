@@ -8,7 +8,7 @@ Spawn a team of parallel agents to analyze conversation history, session transcr
 
 `$ARGUMENTS` controls scope:
 - *(empty)* — full audit across all projects
-- `<project-name>` — focus on a specific project (e.g., `engram`, `seb-life`)
+- `<project-name>` — focus on a specific project (e.g., `my-app`, `backend`)
 - `--quick` — analyze history.jsonl only, skip session deep-dives
 
 ## Steps
