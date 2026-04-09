@@ -12,15 +12,6 @@ Start the day with full context. Aggregate recent work, open commitments, and bl
 
 ## Steps
 
-### 0. Daily note (seb-life context only)
-
-If `notes/daily-notes/` exists in the current repo or in `~/projects/seb-life`:
-- Run `./scripts/daily-note.sh` (or `~/projects/seb-life/system/scripts/daily-note.sh`) to create/open today's note
-- Read today's note and identify carryover tasks (items with `(↻N)` markers or `- [ ]` from yesterday)
-- Summarize carryover tasks in the briefing output
-
-If not in seb-life context: skip this step.
-
 ### 1. Gather context
 
 Run these in parallel where possible:
