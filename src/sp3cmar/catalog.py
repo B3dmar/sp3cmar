@@ -114,22 +114,12 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
     SkillSpec(
         slug="done",
         command="/sp3cmar-done",
-        description="Debrief the session and close",
+        description="Debrief the session and close — extract memories, check dirty state",
         category="Workflow",
         providers=("claude", "codex"),
         triggers=("done", "debrief", "wrap up"),
         requires_mcp=("engram",),
         tags=("workflow", "memory"),
-    ),
-    SkillSpec(
-        slug="morning",
-        command="/sp3cmar-morning",
-        description="Morning briefing — context, commitments, priorities",
-        category="Workflow",
-        providers=("claude", "codex"),
-        triggers=("morning", "briefing", "priorities"),
-        requires_mcp=("engram",),
-        tags=("workflow", "planning"),
     ),
     SkillSpec(
         slug="post-merge",
@@ -182,24 +172,7 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         requires_mcp=("engram",),
         tags=("workflow", "release"),
     ),
-    SkillSpec(
-        slug="fix",
-        command="/sp3cmar-fix",
-        description="Auto-fix review findings via /simplify and /batch",
-        category="Workflow",
-        providers=("claude", "codex"),
-        triggers=("fix findings", "batch fixes"),
-        tags=("workflow", "repair"),
-    ),
-    SkillSpec(
-        slug="migrate",
-        command="/sp3cmar-migrate",
-        description="Codebase migration — scan, plan, execute bulk refactors",
-        category="Workflow",
-        providers=("claude", "codex"),
-        triggers=("migrate", "bulk refactor"),
-        tags=("workflow", "migration"),
-    ),
+    # fix and migrate removed — never/rarely used (0 and 3 invocations across 735 sessions)
     SkillSpec(
         slug="feature",
         command="/sp3cmar-feature",
@@ -265,16 +238,7 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
     ),
     # review-env merged into unified /sp3cmar-review
     # review-debt and review-deps merged into unified /sp3cmar-review
-    SkillSpec(
-        slug="incident",
-        command="/sp3cmar-incident",
-        description="Incident response — trace errors, check deployments, generate postmortem",
-        category="Ops",
-        providers=("claude", "codex"),
-        triggers=("incident", "outage", "postmortem"),
-        requires_tools=("git",),
-        tags=("ops", "incident"),
-    ),
+    # incident removed — 0 invocations across 735 sessions
     SkillSpec(
         slug="seo-geo",
         command="/sp3cmar-seo-geo",
@@ -402,17 +366,10 @@ AGENT_SPECS: tuple[AgentSpec, ...] = (
 )
 
 ENGRAM_EXTENSION_SPECS: tuple[ExtensionSpec, ...] = (
-    ExtensionSpec(
-        slug="morning-briefing",
-        description="Session startup with 3ngram context",
-        channel="engram",
-        providers=("claude",),
-        requires_mcp=("3ngram",),
-        tags=("engram", "workflow"),
-    ),
+    # morning-briefing removed — superseded by /briefing skill
     ExtensionSpec(
         slug="session-debrief",
-        description="Session close with memory extraction",
+        description="[DEPRECATED] Merged into /sp3cmar-done",
         channel="engram",
         providers=("claude",),
         requires_mcp=("3ngram",),
