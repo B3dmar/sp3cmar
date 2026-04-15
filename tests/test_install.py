@@ -34,14 +34,11 @@ class TestInstallSkills:
             # Workflow
             "ship.md",
             "done.md",
-            "morning.md",
             "post-merge.md",
             "worktree.md",
             "doc-audit.md",
             "workflow-audit.md",
             "staging-audit.md",
-            "fix.md",
-            "migrate.md",
             # Spec & review
             "feature.md",
             "review.md",
@@ -51,8 +48,6 @@ class TestInstallSkills:
             "implement.md",
             # Ship
             "release-notes.md",
-            # Ops
-            "incident.md",
             # Growth
             "seo-geo.md",
             "ux-audit.md",
@@ -61,7 +56,7 @@ class TestInstallSkills:
         for skill in expected_skills:
             assert skill in SKILLS, f"Missing skill: {skill}"
 
-        assert len(SKILLS) == 19
+        assert len(SKILLS) == 15
 
     def test_skill_info_complete(self):
         """All skills in SKILLS have entries in skill_info."""
