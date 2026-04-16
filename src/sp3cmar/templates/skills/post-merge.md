@@ -2,7 +2,7 @@
 description: Post-merge cascade — update all tracking artifacts after a PR merge
 ---
 
-After a PR is merged, update all tracking artifacts in one pass.
+After a PR is merged, update all tracking artifacts in one pass. Behavior adapts based on whether the PR targeted staging or main.
 
 ## Arguments
 
@@ -20,9 +20,9 @@ gh pr view <PR#> --json title,body,mergedAt,labels,closingIssuesReferences,headR
 
 Extract:
 - What was shipped (title + body summary)
-- Linked/closing issues
+- Linked/closing issues (from both `closingIssuesReferences` and PR body text — look for `Fixes #N`, `Closes #N`, `Relates to #N`, `Part of #N`)
 - Branch that was merged
-- Base branch (staging or main)
+- **Base branch** (staging or main) — this determines all downstream behavior
 
 If the PR is not merged, STOP and inform the user.
 
@@ -34,15 +34,26 @@ If the PR is not merged, STOP and inform the user.
 
 ### 3. Update roadmap (if referenced)
 
+**Skip if base branch is `staging`** — roadmap items are only checked off on release to main.
+
+If base branch is `main`:
 - Search `roadmap.md` (or equivalent) for items matching the PR title, linked issues, or branch name
 - Check off completed items (`- [ ]` → `- [x]`)
 - Only modify items that clearly match — do not guess
 
-### 4. Close linked issues
+### 4. Issue lifecycle (branch-dependent)
 
-- For each issue linked in the PR body or via `closingIssuesReferences`:
-  - Verify it should be closed (the PR actually resolves it)
-  - If not auto-closed by GitHub, close with `gh issue close <#>`
+**If merged to `staging`:**
+- Do NOT close any linked issues — they stay open until released to main
+- The `project-sync.yml` workflow automatically sets their Project status to "On Staging"
+- Note in the summary which issues were found but left open
+
+**If merged to `main`:**
+- For each linked issue, verify it was auto-closed by GitHub:
+  `gh issue view <#> --json state` — check state is "CLOSED"
+- If any issue was NOT auto-closed (e.g., PR used `Relates to` instead of `Fixes`):
+  close it with `gh issue close <#>`
+- The `project-sync.yml` workflow automatically sets their Project status to "Done"
 
 ### 5. Resolve Engram commitments
 
@@ -56,9 +67,10 @@ If the PR is not merged, STOP and inform the user.
 Output what was updated:
 ```
 ## Post-merge: PR #<N>
+- Base branch: staging | main
 - Changelog: [updated/skipped]
-- Roadmap: [N items checked off/no matches]
-- Issues closed: [list or none]
+- Roadmap: [N items checked off / skipped (staging merge)]
+- Issues: [closed: #X, #Y | left open for main merge: #X, #Y]
 - Commitments resolved: [list or none]
 ```
 

@@ -90,9 +90,13 @@ If `$ARGUMENTS` is `commit`, stop here.
 - Determine base branch:
   - If current branch is `staging` and `$ARGUMENTS` is `main`: base = `main`
   - Otherwise: base = `staging`
+- Determine issue-linking keywords based on base branch:
+  - If base = `staging`: use `Relates to #N` or `Part of #N` for linked issues.
+    Do NOT use `Fixes`, `Closes`, or `Resolves` — these prematurely close issues on staging merge.
+  - If base = `main`: use `Fixes #N` or `Closes #N` so GitHub auto-closes on merge.
 - Create PR using `gh pr create`:
   - Title: short, under 70 chars
-  - Body: summary bullets, test plan, linked issues
+  - Body: summary bullets, test plan, linked issues (with correct keywords per above)
 - Output the PR URL
 
 ### 8. CI status check
