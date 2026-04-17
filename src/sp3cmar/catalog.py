@@ -162,6 +162,16 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         tags=("workflow", "automation"),
     ),
     SkillSpec(
+        slug="memory-audit",
+        command="/sp3cmar-memory-audit",
+        description="Audit 3ngram capture coverage — diff what sessions said vs what was persisted",
+        category="Workflow",
+        providers=("claude", "codex"),
+        triggers=("memory audit", "capture coverage", "3ngram audit"),
+        requires_mcp=("engram",),
+        tags=("workflow", "memory", "audit"),
+    ),
+    SkillSpec(
         slug="staging-audit",
         command="/sp3cmar-staging-audit",
         description="Pre-merge audit — open PRs, blockers, staging↔main delta, roadmap",

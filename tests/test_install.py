@@ -38,6 +38,7 @@ class TestInstallSkills:
             "worktree.md",
             "doc-audit.md",
             "workflow-audit.md",
+            "memory-audit.md",
             "staging-audit.md",
             # Spec & review
             "feature.md",
@@ -56,7 +57,7 @@ class TestInstallSkills:
         for skill in expected_skills:
             assert skill in SKILLS, f"Missing skill: {skill}"
 
-        assert len(SKILLS) == 15
+        assert len(SKILLS) == 16
 
     def test_skill_info_complete(self):
         """All skills in SKILLS have entries in skill_info."""
