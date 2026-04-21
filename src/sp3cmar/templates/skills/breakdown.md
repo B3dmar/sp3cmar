@@ -33,7 +33,18 @@ Read the spec file. If no approved spec found, output: "ERROR: No approved SPEC.
 
 Verify the spec has been approved (look for approval marker or ask user to confirm).
 
-### Step 2: Analyze Scope
+### Step 2: Ground in prior decisions (3ngram, if available)
+
+Before slicing the spec into PRs, pull institutional memory that shapes the boundaries:
+
+1. Call `mcp__3ngram__briefing` with `brief=true` and `sections=["blockers","stale","recent_decisions"]` — surfaces active blockers and architectural decisions that affect ordering.
+2. Call `mcp__3ngram__search_memories` with a topic derived from the spec title and the modules it touches (e.g. "auth mixin protocol", "billing subscription webhook"). Limit 8, `brief=true`.
+3. Read returned memories. Notably: prior **decisions** often dictate the right PR ordering (e.g. "protocol must ship before mixins" from a similar refactor); prior **blockers** may force re-ordering (e.g. "don't merge X until Y pipeline fixed").
+4. If any returned memory indicates a blocker on this feature's scope, pause and surface to the user before writing the breakdown.
+
+If 3ngram MCP is unavailable, skip with a one-line note and continue.
+
+### Step 3: Analyze Scope
 
 From the spec, extract:
 - All components/modules that need changes
@@ -42,7 +53,7 @@ From the spec, extract:
 - External dependencies or integrations
 - Database migrations needed
 
-### Step 3: Determine PR Boundaries
+### Step 4: Determine PR Boundaries
 
 Rules for splitting:
 1. **Each PR must be under 200 lines of diff** (excluding generated files, lock files)
@@ -52,7 +63,7 @@ Rules for splitting:
 5. **Foundation first** — types, models, and interfaces before implementation
 6. **Tests travel with their code** — test files in the same PR as the code they test
 
-### Step 4: Order the Stack
+### Step 5: Order the Stack
 
 Determine dependency order:
 1. Schema/migration PRs first
@@ -63,7 +74,7 @@ Determine dependency order:
 6. Integration tests and e2e
 7. Documentation updates
 
-### Step 5: Generate Breakdown
+### Step 6: Generate Breakdown
 
 **Output:** `sp3cmar/features/FEAT-{NNN}-{slug}/BREAKDOWN.md`
 
@@ -115,7 +126,7 @@ PR1 → PR2 → PR3
             ↘ PR4 → PR5
 ```
 
-### Step 6: Validate
+### Step 7: Validate
 
 After generating:
 1. Verify total estimated lines across all PRs roughly matches spec scope
