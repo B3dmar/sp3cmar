@@ -23,7 +23,18 @@ Parse `$ARGUMENTS`:
 
 If no valid input found, output: "ERROR: Provide a GH issue number (#N) or spec file path." and stop.
 
-### Step 2: Explore Codebase
+### Step 2: Ground in prior decisions (3ngram, if available)
+
+Before exploring the codebase, pull the institutional memory for this topic:
+
+1. Call `mcp__3ngram__briefing` with `brief=true` and `sections=["blockers","stale","recent_decisions"]`.
+2. Call `mcp__3ngram__search_memories` with a topic string derived from the issue/spec title and the scope summary (e.g. "mixin pattern protocol runtime assert" for a service-split task). Limit 8, `brief=true`.
+3. Read the returned memories in full before exploring. They often contain the exact conventions, prior gotchas, and file paths you'd otherwise re-discover.
+4. If any returned memory indicates a blocker on the current work (e.g. "don't add rules until pipeline fixed"), pause and surface to the user before writing code.
+
+If 3ngram MCP is unavailable, skip with a one-line note and continue.
+
+### Step 3: Explore Codebase
 
 Before writing any code:
 1. Read the project's `CLAUDE.md` for conventions, patterns, and constraints
@@ -31,7 +42,7 @@ Before writing any code:
 3. Map the files that will need changes — identify create vs modify
 4. Check for existing tests that cover adjacent functionality
 
-### Step 3: Plan Changes
+### Step 4: Plan Changes
 
 Produce a brief implementation plan:
 - List each file to create or modify with a one-line description
@@ -40,14 +51,14 @@ Produce a brief implementation plan:
 
 **Present the plan to the user and wait for approval before proceeding.**
 
-### Step 4: Implement
+### Step 5: Implement
 
 Execute the approved plan:
 1. Write code following project conventions (from CLAUDE.md and existing patterns)
 2. Write tests alongside the code — unit tests for logic, integration tests for API/DB
 3. Keep changes minimal and focused — no drive-by refactors
 
-### Step 5: Quality Gate
+### Step 6: Quality Gate
 
 Run the project's quality checks on changed files:
 
@@ -66,7 +77,20 @@ If any check fails:
 
 If still failing after 3 attempts, stop and ask the user for guidance.
 
-### Step 6: Ship
+### Step 7: Persist findings (3ngram, if available)
+
+Before shipping, capture anything worth keeping for future sessions:
+
+- If you discovered a **new pattern** (convention, mixin shape, protocol, file layout): `mcp__3ngram__remember` with `classification=pattern`
+- If you made a **non-obvious architectural choice** with a tradeoff: `classification=decision`
+- If you hit a **gotcha that wasn't in the memories you searched in Step 2**: `classification=pattern`, tag it so future searches hit it
+- If this surfaces **follow-up work** outside the current PR scope: `classification=commitment` with a short description
+
+One `remember` call per run minimum unless the task was purely mechanical. This makes you a net contributor to the memory, not just a reader.
+
+Skip if 3ngram MCP is unavailable.
+
+### Step 8: Ship
 
 Unless `--pr-only` was passed, delegate to `/sp3cmar-ship` to commit, push, and create the PR.
 
@@ -75,6 +99,6 @@ If `--pr-only` was passed, stage the changes and output a summary of what was im
 ## Rules
 
 - **Single PR per run** — if the implementation exceeds 200 lines, implement only the first slice and document the remainder
-- **Never ship with failing tests** — quality gate must pass before Step 6
+- **Never ship with failing tests** — quality gate must pass before Step 7
 - **Ask if blocked** — if anything is ambiguous or a decision has multiple valid options, ask the user rather than guessing
 - **Follow project conventions** — CLAUDE.md rules override any default behavior
