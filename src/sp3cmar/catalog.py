@@ -152,6 +152,17 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         tags=("docs", "audit"),
     ),
     SkillSpec(
+        slug="milestone-audit",
+        command="/sp3cmar-milestone-audit",
+        description="Audit GitHub milestone scope, issue hygiene, parent links, and release readiness",
+        category="Workflow",
+        providers=("claude", "codex"),
+        triggers=("milestone audit", "release scope", "issue hygiene", "epic links"),
+        requires_tools=("git", "gh"),
+        requires_mcp=("engram",),
+        tags=("workflow", "github", "audit"),
+    ),
+    SkillSpec(
         slug="workflow-audit",
         command="/sp3cmar-workflow-audit",
         description="Analyze conversations for repeating patterns and automation opportunities",

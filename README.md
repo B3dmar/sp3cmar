@@ -2,7 +2,7 @@
 
 Workflow skills and reviewer agents for Claude Code, Codex, and Cowork.
 
-24 skills + 13 agents that bring structured workflows to AI-assisted development: feature specs, code reviews, shipping, incident response, technical SEO/GEO, and more.
+17 core skills, 2 Cowork skills, 2 3ngram extensions, and 13 agents that bring structured workflows to AI-assisted development: feature specs, code reviews, shipping, audits, technical SEO/GEO, and more.
 
 ## Installation
 
@@ -61,15 +61,13 @@ uv tool uninstall sp3cmar
 |-------|-------------|
 | `/sp3cmar-ship` | Lint, commit, push, and create PR |
 | `/sp3cmar-done` | Session debrief and close |
-| `/sp3cmar-morning` | Morning context and priorities |
 | `/sp3cmar-post-merge` | Post-merge cascade updates |
 | `/sp3cmar-worktree` | Git worktree lifecycle |
 | `/sp3cmar-doc-audit` | Audit tracking artifacts for drift |
+| `/sp3cmar-milestone-audit` | Audit milestone scope, issue hierarchy, and release readiness |
 | `/sp3cmar-workflow-audit` | Analyze conversations for automation |
+| `/sp3cmar-memory-audit` | Audit 3ngram capture coverage |
 | `/sp3cmar-staging-audit` | Pre-merge audit |
-| `/sp3cmar-fix` | Auto-fix review findings |
-| `/sp3cmar-migrate` | Bulk codebase migration |
-| `/sp3cmar-release-notes` | Generate release notes |
 
 ### Analysis
 
@@ -82,7 +80,7 @@ uv tool uninstall sp3cmar
 | `/sp3cmar-ux-audit` | Full-stack UI/UX audit |
 | `/sp3cmar-breakdown` | Spec to stacked PR plan |
 | `/sp3cmar-implement` | Autonomous feature implementation |
-| `/sp3cmar-incident` | Incident response and postmortem |
+| `/sp3cmar-release-notes` | Generate release notes |
 
 ### Cowork
 
@@ -95,7 +93,6 @@ uv tool uninstall sp3cmar
 
 | Skill | Description |
 |-------|-------------|
-| `morning-briefing` | Session startup with 3ngram context |
 | `session-debrief` | Session close with memory extraction |
 | `doc-audit` | Cross-ref docs with 3ngram decisions |
 

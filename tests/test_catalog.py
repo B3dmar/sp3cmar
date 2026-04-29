@@ -15,6 +15,7 @@ def test_catalog_command_outputs_valid_json() -> None:
     payload = json.loads(result.output)
     assert payload["name"] == "sp3cmar"
     assert any(skill["name"] == "seo-geo" for skill in payload["skills"])
+    assert any(skill["name"] == "milestone-audit" for skill in payload["skills"])
 
 
 def test_catalog_command_can_write_file(tmp_path) -> None:
