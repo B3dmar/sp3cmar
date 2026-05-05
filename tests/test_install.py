@@ -46,6 +46,7 @@ class TestInstallSkills:
             "workflow-audit.md",
             "memory-audit.md",
             "staging-audit.md",
+            "issue.md",
             # Spec & review
             "review.md",
             # Ship
@@ -68,7 +69,7 @@ class TestInstallSkills:
         for skill in retired_skills:
             assert skill not in SKILLS, f"Retired skill still present: {skill}"
 
-        assert len(SKILLS) == 12
+        assert len(SKILLS) == 13
 
     def test_skill_info_complete(self):
         """All skills in SKILLS have entries in skill_info."""

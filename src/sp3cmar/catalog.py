@@ -193,6 +193,16 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         requires_mcp=("engram",),
         tags=("workflow", "release"),
     ),
+    SkillSpec(
+        slug="issue",
+        command="/sp3cmar-issue",
+        description="Create a GitHub issue with full hygiene — template, labels, parent sub-issue, project board, milestone",
+        category="Workflow",
+        providers=("claude", "codex"),
+        triggers=("create issue", "file issue", "new issue", "open issue"),
+        requires_tools=("gh",),
+        tags=("workflow", "github", "issue"),
+    ),
     # fix and migrate removed — never/rarely used (0 and 3 invocations across 735 sessions)
     # feature, docs, breakdown, implement removed — 0 invocations in April 2026 audit
     # (feature agent retained for indirect invocation; see AGENT_SPECS)
@@ -369,7 +379,7 @@ def build_manifest() -> dict[str, object]:
         categories.setdefault(spec.category, []).append(spec.filename)
 
     return {
-        "version": "1.1.0",
+        "version": "1.2.0",
         "name": "sp3cmar",
         "description": "Workflow skills and reviewer agents for Claude Code, Codex, and Cowork",
         "repository": "https://github.com/b3dmar/sp3cmar",

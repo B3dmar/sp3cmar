@@ -1,6 +1,6 @@
 [project]
 name = "sp3cmar"
-version = "1.1.0"
+version = "1.2.0"
 description = "Workflow skills and reviewer agents for Claude Code, Codex, and Cowork"
 readme = "README.md"
 requires-python = ">=3.10"

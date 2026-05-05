@@ -109,3 +109,7 @@ After push/PR creation, check CI status:
   - **PASS**: "CI passed"
   - **FAIL**: Show failed run summary with `gh run view <id> --log-failed | tail -30`
 - This is informational only — does not block the ship
+
+### 9. Watch CI and auto-fetch failures
+
+After pushing, if a CI run starts within 30 seconds (`gh run list --branch <branch> --limit 1 --json status,conclusion,databaseId`), watch it via `gh run watch <run_id> --exit-status`. If the run concludes with `failure`, immediately fetch failed-job logs via `gh run view <run_id> --log-failed`, parse the failure, and propose a fix inline. Do NOT ask the user to paste CI output — that violates the global CLAUDE.md "CI failure workflow" rule. If multiple runs trigger (e.g. CI + Project Sync), watch the primary `CI` workflow first.

@@ -2,7 +2,7 @@
 
 Workflow skills and reviewer agents for Claude Code, Codex, and Cowork.
 
-12 core skills, 2 Cowork skills, 2 3ngram extensions, and 13 agents that bring structured workflows to AI-assisted development: code reviews, shipping, audits, technical SEO/GEO, and more.
+13 core skills, 2 Cowork skills, 3 3ngram extensions, and 13 agents that bring structured workflows to AI-assisted development: code reviews, shipping, audits, technical SEO/GEO, and more.
 
 ## Installation
 
@@ -68,6 +68,7 @@ uv tool uninstall sp3cmar
 | `/sp3cmar-workflow-audit` | Analyze conversations for automation |
 | `/sp3cmar-memory-audit` | Audit 3ngram capture coverage |
 | `/sp3cmar-staging-audit` | Pre-merge audit |
+| `/sp3cmar-issue` | Create a GitHub issue with full hygiene |
 
 ### Analysis
 
@@ -90,6 +91,7 @@ uv tool uninstall sp3cmar
 |-------|-------------|
 | `session-debrief` | Session close with memory extraction |
 | `doc-audit` | Cross-ref docs with 3ngram decisions |
+| `bot-adapter` | Scaffold a new chat-platform bot adapter for engram |
 
 ## Agents
 

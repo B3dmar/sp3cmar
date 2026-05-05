@@ -13,6 +13,7 @@ Ready-to-use Claude Code skills that depend on 3ngram MCP tools and resources:
 | `morning-briefing.md` | `engram://overdue`, `engram://blockers`, `engram://commitments`, `search_memories` | Session startup with full context |
 | `session-debrief.md` | `remember`, `resolve`, `engram://commitments` | Session close with memory extraction |
 | `doc-audit.md` | `engram://commitments`, `search_memories` | Cross-ref docs with tracked decisions |
+| `bot-adapter.md` | `remember` (optional commitment) | Scaffold a new chat-platform bot adapter under `engram/backend/src/engram/bots/` |
 
 ### Examples (`examples/`)
 

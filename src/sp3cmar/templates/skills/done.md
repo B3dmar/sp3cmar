@@ -16,7 +16,11 @@ End the current session cleanly. Check for uncommitted work, extract and persist
 
 Run `git status --short` to surface any dirty files. If uncommitted changes exist, flag them before proceeding so the user can decide whether to commit or discard.
 
-### 2. Session review
+### 2. Worktree prune candidates
+
+If running inside a multi-worktree repo, run `git worktree list --porcelain` to enumerate worktrees and `git branch --merged origin/main` to find merged branches. Compute the intersection: worktrees whose branch has already merged. List them to the user with their slug and last-commit date, and offer (yes/no) to remove via `git worktree remove <path>` for each. Default to NOT removing if the user is silent — destructive action requires affirmative consent. Skip this step entirely if not in a git repo or if `.worktrees/` doesn't exist.
+
+### 3. Session review
 
 Scan the conversation for:
 - **Decisions made** — architectural choices, tradeoffs resolved, approaches selected
@@ -27,11 +31,11 @@ Scan the conversation for:
 
 If `quick` argument: only extract decisions and commitments.
 
-### 3. Check open commitments
+### 4. Check open commitments
 
 Read `engram://commitments` to identify any commitments that were completed during this session.
 
-### 4. Persist memories
+### 5. Persist memories
 
 Use the Engram MCP tools to store structured memories with explicit classification:
 
@@ -44,7 +48,7 @@ For any commitments completed during this session: `mcp__3ngram__resolve` with t
 
 If Engram MCP is not connected, output the debrief summary as text so the user can capture it manually.
 
-### 5. Summarize
+### 6. Summarize
 
 Output a structured debrief:
 ```
