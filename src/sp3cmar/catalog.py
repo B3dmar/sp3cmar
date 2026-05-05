@@ -194,15 +194,8 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         tags=("workflow", "release"),
     ),
     # fix and migrate removed — never/rarely used (0 and 3 invocations across 735 sessions)
-    SkillSpec(
-        slug="feature",
-        command="/sp3cmar-feature",
-        description="Create PRD/spec artifacts with acceptance criteria",
-        category="Spec & Review",
-        providers=("claude", "codex"),
-        triggers=("spec", "PRD", "acceptance criteria"),
-        tags=("planning", "spec"),
-    ),
+    # feature, docs, breakdown, implement removed — 0 invocations in April 2026 audit
+    # (feature agent retained for indirect invocation; see AGENT_SPECS)
     SkillSpec(
         slug="review",
         command="/sp3cmar-review",
@@ -218,33 +211,6 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
             "kill report",
         ),
         tags=("review",),
-    ),
-    SkillSpec(
-        slug="docs",
-        command="/sp3cmar-docs",
-        description="Create and maintain high-quality, non-duplicative docs",
-        category="Spec & Review",
-        providers=("claude", "codex"),
-        triggers=("docs", "documentation", "write docs"),
-        tags=("docs",),
-    ),
-    SkillSpec(
-        slug="breakdown",
-        command="/sp3cmar-breakdown",
-        description="Break approved spec into ordered stacked PRs under 200 lines",
-        category="Plan & Build",
-        providers=("claude", "codex"),
-        triggers=("break down spec", "stacked PRs"),
-        tags=("planning", "delivery"),
-    ),
-    SkillSpec(
-        slug="implement",
-        command="/sp3cmar-implement",
-        description="Autonomous feature implementation — spec/issue to working PR",
-        category="Plan & Build",
-        providers=("claude", "codex"),
-        triggers=("implement", "build this feature"),
-        tags=("delivery", "implementation"),
     ),
     # review-contract and review-test merged into unified /sp3cmar-review
     SkillSpec(
@@ -278,23 +244,7 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         requires_tools=("web", "git"),
         tags=("docs", "growth", "search"),
     ),
-    SkillSpec(
-        slug="ux-audit",
-        command="/sp3cmar-ux-audit",
-        description="Full-stack UI/UX audit — schema, components, design, landing page, coverage gaps",
-        category="Spec & Review",
-        providers=("claude", "codex"),
-        triggers=(
-            "UX audit",
-            "UI audit",
-            "design audit",
-            "component inventory",
-            "coverage matrix",
-            "frontend audit",
-        ),
-        requires_tools=("git",),
-        tags=("audit", "ux", "frontend"),
-    ),
+    # ux-audit removed — 0 invocations in April 2026 audit
 )
 
 COWORK_ONLY_SKILL_SPECS: tuple[SkillSpec, ...] = (
@@ -419,7 +369,7 @@ def build_manifest() -> dict[str, object]:
         categories.setdefault(spec.category, []).append(spec.filename)
 
     return {
-        "version": "1.0.0",
+        "version": "1.1.0",
         "name": "sp3cmar",
         "description": "Workflow skills and reviewer agents for Claude Code, Codex, and Cowork",
         "repository": "https://github.com/b3dmar/sp3cmar",

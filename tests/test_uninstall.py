@@ -21,7 +21,7 @@ def test_uninstall_removes_global_artifacts(runner, cli_main, tmp_path, monkeypa
 
     commands_dir = tmp_path / ".claude" / "commands"
     commands_dir.mkdir(parents=True)
-    (commands_dir / "sp3cmar-feature.md").write_text("skill")
+    (commands_dir / "sp3cmar-ship.md").write_text("skill")
 
     agents_dir = tmp_path / ".claude" / "agents"
     agents_dir.mkdir(parents=True)
@@ -30,7 +30,7 @@ def test_uninstall_removes_global_artifacts(runner, cli_main, tmp_path, monkeypa
     result = runner.invoke(cli_main, ["uninstall", "--yes", "--ai", "claude"])
 
     assert result.exit_code == 0
-    assert not (commands_dir / "sp3cmar-feature.md").exists()
+    assert not (commands_dir / "sp3cmar-ship.md").exists()
     assert not (agents_dir / "sp3cmar-reviewer-correctness.md").exists()
 
 
@@ -48,7 +48,7 @@ def test_uninstall_dry_run_no_changes(runner, cli_main, tmp_path, monkeypatch):
 
     commands_dir = tmp_path / ".claude" / "commands"
     commands_dir.mkdir(parents=True)
-    target = commands_dir / "sp3cmar-docs.md"
+    target = commands_dir / "sp3cmar-ship.md"
     target.write_text("skill")
 
     result = runner.invoke(cli_main, ["uninstall", "--dry-run", "--ai", "claude"])
@@ -63,7 +63,7 @@ def test_uninstall_confirmation_rejects(runner, cli_main, tmp_path, monkeypatch)
 
     commands_dir = tmp_path / ".claude" / "commands"
     commands_dir.mkdir(parents=True)
-    target = commands_dir / "sp3cmar-docs.md"
+    target = commands_dir / "sp3cmar-ship.md"
     target.write_text("skill")
 
     result = runner.invoke(cli_main, ["uninstall", "--ai", "claude"], input="n\n")

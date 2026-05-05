@@ -14,7 +14,7 @@ def test_install_rejects_symlinked_skill_target(tmp_path, monkeypatch):
 
     evil_target = tmp_path / "evil.txt"
     evil_target.write_text("evil")
-    symlink = commands_dir / "sp3cmar-docs.md"
+    symlink = commands_dir / "sp3cmar-ship.md"
     os.symlink(evil_target, symlink)
 
     from sp3cmar.cli import main

@@ -12,7 +12,7 @@ def test_install_no_flags_defaults_to_global(tmp_path, monkeypatch):
     result = runner.invoke(main, ["install"])
 
     assert result.exit_code == 0
-    assert (tmp_path / ".claude" / "commands" / "sp3cmar-docs.md").exists()
+    assert (tmp_path / ".claude" / "commands" / "sp3cmar-ship.md").exists()
 
 
 def test_install_updates_changed_skill(tmp_path, monkeypatch):
@@ -20,7 +20,7 @@ def test_install_updates_changed_skill(tmp_path, monkeypatch):
 
     commands_dir = tmp_path / ".claude" / "commands"
     commands_dir.mkdir(parents=True)
-    target = commands_dir / "sp3cmar-docs.md"
+    target = commands_dir / "sp3cmar-ship.md"
     target.write_text("# stale")
 
     from sp3cmar.cli import main

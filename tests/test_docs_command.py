@@ -14,16 +14,16 @@ class TestDocsCommand:
 
         assert result.exit_code == 0
         assert "Sp3cMar Workflow" in result.output
-        assert "/sp3cmar-docs" in result.output
+        assert "/sp3cmar-ship" in result.output
 
     def test_docs_valid_skill_shows_content(self):
         from sp3cmar.cli import main
 
         runner = CliRunner()
-        result = runner.invoke(main, ["docs", "docs"])
+        result = runner.invoke(main, ["docs", "ship"])
 
         assert result.exit_code == 0
-        assert "documentation" in result.output.lower()
+        assert "ship" in result.output.lower()
 
     def test_docs_invalid_skill_shows_error(self):
         from sp3cmar.cli import main
@@ -37,7 +37,7 @@ class TestDocsCommand:
         from sp3cmar.cli import main
 
         runner = CliRunner()
-        result = runner.invoke(main, ["docs", "/docs"])
+        result = runner.invoke(main, ["docs", "/ship"])
 
         assert result.exit_code == 0
         assert "Unknown skill" not in result.output

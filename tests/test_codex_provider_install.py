@@ -12,27 +12,27 @@ def test_install_codex_global_uses_home(tmp_path, monkeypatch):
     result = runner.invoke(main, ["install", "--ai", "codex"])
 
     assert result.exit_code == 0
-    assert (tmp_path / ".codex" / "skills" / "sp3cmar-docs" / "SKILL.md").exists()
-    assert (tmp_path / ".codex" / "skills" / "sp3cmar-feature" / "SKILL.md").exists()
-    assert (tmp_path / ".codex" / "agents" / "sp3cmar-docs.toml").exists()
+    assert (tmp_path / ".codex" / "skills" / "sp3cmar-ship" / "SKILL.md").exists()
+    assert (tmp_path / ".codex" / "skills" / "sp3cmar-review" / "SKILL.md").exists()
+    assert (tmp_path / ".codex" / "agents" / "sp3cmar-feature.toml").exists()
     assert (tmp_path / ".codex" / "agents" / "sp3cmar-review-pr.toml").exists()
     config_toml = (tmp_path / ".codex" / "config.toml").read_text()
     assert "# BEGIN SP3CMAR AGENTS" in config_toml
-    assert "[agents.sp3cmar-docs]" in config_toml
+    assert "[agents.sp3cmar-feature]" in config_toml
 
 
 def test_uninstall_codex_global_removes_skill_files(tmp_path, monkeypatch):
     monkeypatch.setattr("pathlib.Path.home", lambda: tmp_path)
 
     skills_dir = tmp_path / ".codex" / "skills"
-    docs_dir = skills_dir / "sp3cmar-docs"
-    docs_dir.mkdir(parents=True)
-    (docs_dir / "SKILL.md").write_text("# Docs")
+    ship_dir = skills_dir / "sp3cmar-ship"
+    ship_dir.mkdir(parents=True)
+    (ship_dir / "SKILL.md").write_text("# Ship")
     agents_dir = tmp_path / ".codex" / "agents"
     agents_dir.mkdir(parents=True)
-    (agents_dir / "sp3cmar-docs.toml").write_text('developer_instructions = """x"""')
+    (agents_dir / "sp3cmar-feature.toml").write_text('developer_instructions = """x"""')
     (tmp_path / ".codex" / "config.toml").write_text(
-        '# BEGIN SP3CMAR AGENTS\n[agents.sp3cmar-docs]\ndescription = "Docs"\nconfig_file = "agents/sp3cmar-docs.toml"\n# END SP3CMAR AGENTS\n'
+        '# BEGIN SP3CMAR AGENTS\n[agents.sp3cmar-feature]\ndescription = "Feature"\nconfig_file = "agents/sp3cmar-feature.toml"\n# END SP3CMAR AGENTS\n'
     )
 
     from sp3cmar.cli import main
@@ -41,8 +41,8 @@ def test_uninstall_codex_global_removes_skill_files(tmp_path, monkeypatch):
     result = runner.invoke(main, ["uninstall", "--yes", "--ai", "codex"])
 
     assert result.exit_code == 0
-    assert not (docs_dir / "SKILL.md").exists()
-    assert not (agents_dir / "sp3cmar-docs.toml").exists()
+    assert not (ship_dir / "SKILL.md").exists()
+    assert not (agents_dir / "sp3cmar-feature.toml").exists()
     config_path = tmp_path / ".codex" / "config.toml"
     assert not config_path.exists() or "# BEGIN SP3CMAR AGENTS" not in config_path.read_text()
 

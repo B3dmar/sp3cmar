@@ -1,4 +1,4 @@
-"""Sp3cMar CLI - global skill installer for feature/docs/review workflows."""
+"""Sp3cMar CLI - global skill installer for review/ship/audit workflows."""
 
 import logging
 import sys
