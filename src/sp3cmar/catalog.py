@@ -385,6 +385,14 @@ ENGRAM_EXTENSION_SPECS: tuple[ExtensionSpec, ...] = (
         requires_mcp=("3ngram",),
         tags=("engram", "docs"),
     ),
+    ExtensionSpec(
+        slug="bot-adapter",
+        description="Scaffold a new chat-platform bot adapter for engram (Slack, Telegram, WhatsApp, Teams, etc.)",
+        channel="engram",
+        providers=("claude",),
+        requires_mcp=("3ngram",),
+        tags=("engram", "bots", "scaffold"),
+    ),
 )
 
 SKILL_SPECS_BY_FILENAME: dict[str, SkillSpec] = {
