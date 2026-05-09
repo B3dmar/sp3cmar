@@ -203,6 +203,27 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         requires_tools=("gh",),
         tags=("workflow", "github", "issue"),
     ),
+    SkillSpec(
+        slug="context",
+        command="/sp3cmar-context",
+        description="Phase-0 briefing for a topic — pulls 3ngram memories, GitHub state, and codebase pointers before you start work",
+        category="Workflow",
+        providers=("claude", "codex"),
+        triggers=("context", "briefing", "what do we know about", "prior decisions"),
+        requires_tools=("git", "gh"),
+        requires_mcp=("engram",),
+        tags=("workflow", "memory", "research"),
+    ),
+    SkillSpec(
+        slug="acceptance",
+        command="/sp3cmar-acceptance",
+        description="Verify a GitHub issue has explicit acceptance criteria + linkage before starting work",
+        category="Workflow",
+        providers=("claude", "codex"),
+        triggers=("acceptance", "ready to start", "issue check"),
+        requires_tools=("gh",),
+        tags=("workflow", "github", "issue"),
+    ),
     # fix and migrate removed — never/rarely used (0 and 3 invocations across 735 sessions)
     # feature, docs, breakdown, implement removed — 0 invocations in April 2026 audit
     # (feature agent retained for indirect invocation; see AGENT_SPECS)
