@@ -69,7 +69,7 @@ class TestInstallSkills:
         for skill in retired_skills:
             assert skill not in SKILLS, f"Retired skill still present: {skill}"
 
-        assert len(SKILLS) == 13
+        assert len(SKILLS) == 15
 
     def test_skill_info_complete(self):
         """All skills in SKILLS have entries in skill_info."""
