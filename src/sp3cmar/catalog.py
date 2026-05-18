@@ -224,6 +224,16 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         requires_tools=("gh",),
         tags=("workflow", "github", "issue"),
     ),
+    SkillSpec(
+        slug="html-plan",
+        command="/sp3cmar-html-plan",
+        description="Render a markdown plan or 3ngram memory as a single-file interactive HTML artifact",
+        category="Workflow",
+        providers=("claude", "codex"),
+        triggers=("html plan", "render plan as html", "visual plan", "plan artifact"),
+        requires_mcp=("engram",),
+        tags=("workflow", "plan", "rendering"),
+    ),
     # fix and migrate removed — never/rarely used (0 and 3 invocations across 735 sessions)
     # feature, docs, breakdown, implement removed — 0 invocations in April 2026 audit
     # (feature agent retained for indirect invocation; see AGENT_SPECS)
