@@ -16,12 +16,21 @@ Cross-reference project tracking artifacts and report contradictions, stale item
 
 ### 1. Gather all tracking data
 
-Run in parallel:
+First, dispatch the `context-gather` agent for the `issues` and `engram`
+slices. It returns the **shared bundle** — the all-state GitHub issue list
+and active commitments/stale items — computed **once** so this skill,
+`staging-audit`, `milestone-audit`, and `post-merge` do not each re-run the
+same `gh issue list` + `engram://` queries. Consume its `### Issues` and
+`### 3ngram` blocks; do NOT re-run those queries here.
+
+Then gather this skill's **doc-specific** sources inline (in parallel):
 
 - **Roadmap**: Read `roadmap.md` (or equivalent). Extract all checkbox items with their status (done/open) and any issue references
 - **Backlog**: Read `backlog.md` (if exists). Extract entries with issue references
-- **GitHub issues**: `gh issue list --state all --limit 100 --json number,title,state,labels`
-- **Engram commitments**: Read `engram://commitments` and `engram://stale` via MCP resources
+
+Use the shared bundle for GitHub issues (open/closed, labels) and Engram
+commitments/stale; pair them with the roadmap/backlog above for the
+cross-reference in the next step.
 
 ### 2. Cross-reference
 

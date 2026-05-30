@@ -34,22 +34,34 @@ Resolve the milestone:
 - If `$ARGUMENTS` names a milestone, use that exact title.
 - If empty, list open milestones and choose the nearest active release milestone. If ambiguous, ask the user which milestone to audit.
 
-Use GitHub CLI/API as needed:
-
 ```bash
 gh api repos/{owner}/{repo}/milestones
-gh issue list --state all --milestone "<milestone>" --limit 200 --json number,title,state,labels,milestone,assignees,createdAt,updatedAt,closedAt,url
-gh pr list --state all --base staging --limit 100 --json number,title,state,labels,reviewDecision,statusCheckRollup,createdAt,updatedAt,url
 ```
 
-If the repo uses GitHub issue hierarchy, inspect parent/sub-issue metadata via `gh issue view` or GraphQL for issues that look like epics or children.
+### 2. Gather shared context (once)
 
-### 2. Gather project context
+Dispatch the `context-gather` agent for the `prs`, `issues`, and `engram`
+slices. Pass `--quick` through as `--skip-engram` for its 3ngram slice.
 
-Unless `--quick` is passed:
-- Search 3ngram/Engram for the project, milestone title, release blockers, and recent scope decisions.
-- Read roadmap/backlog/release notes files if present: `roadmap.md`, `backlog.md`, `docs/**/roadmap*`, `docs/**/release*`, `.claude/plans/**`.
-- Compare docs and memories to GitHub issue state.
+It returns the **shared bundle** — open-PR inventory, the all-state issue
+list, and active blockers/commitments/overdue/stale — computed **once** so
+this skill, `staging-audit`, `doc-audit`, and `post-merge` do not each
+re-run the same GitHub + 3ngram queries.
+
+Consume its `### Issues` and `### Open PRs` blocks instead of re-running
+`gh issue list` or `gh pr list`, and its `### 3ngram` block instead of
+re-reading the `engram://` resources.
+
+Then layer on this skill's **milestone-specific** gathering inline:
+- Narrow the issue set to the resolved milestone:
+  `gh issue list --state all --milestone "<milestone>" --limit 200 --json number,title,state,labels,milestone,assignees,createdAt,updatedAt,closedAt,url`
+- Filter the shared open-PR bundle to PRs based on `staging`, or fetch
+  milestone-scoped PRs if needed.
+- If the repo uses GitHub issue hierarchy, inspect parent/sub-issue
+  metadata via `gh issue view` or GraphQL for epic/child issues.
+- Unless `--quick`: read roadmap/backlog/release notes files if present
+  (`roadmap.md`, `backlog.md`, `docs/**/roadmap*`, `docs/**/release*`,
+  `.claude/plans/**`) and compare docs and memories to GitHub issue state.
 
 ### 3. Classify issues
 

@@ -57,7 +57,13 @@ If base branch is `main`:
 
 ### 5. Resolve Engram commitments
 
-- Read Engram MCP resource `engram://commitments` for open commitments
+- Get open commitments from the shared context-gather: dispatch the
+  `context-gather` agent for the `engram` slice and use its `### 3ngram`
+  block's commitments list. This is the same shared context-gather that
+  `staging-audit`, `milestone-audit`, and `doc-audit` consume, so the
+  `engram://commitments` read happens once rather than being repeated per
+  audit skill. (If you are already running inside an audit that dispatched
+  `context-gather`, reuse that output instead of dispatching again.)
 - Match commitments to the shipped work (by topic, issue number, or keyword)
 - Resolve matched commitments using `resolve()` tool
 - If Engram MCP is not connected, skip this step and note it
