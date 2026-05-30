@@ -51,6 +51,7 @@ class TestInstallSkills:
             "acceptance.md",
             "html-plan.md",
             "pipeline.md",
+            "release.md",
             # Spec & review
             "review.md",
             "bot-review.md",
