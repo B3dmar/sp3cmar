@@ -415,6 +415,12 @@ AGENT_SPECS: tuple[AgentSpec, ...] = (
         "Advisory: drive a real browser to validate a frontend against issue acceptance criteria",
         focus=("frontend", "acceptance", "browser"),
     ),
+    AgentSpec(
+        "context-gather",
+        "Context Gather",
+        "Shared context-gather for the audit skills: staging↔main delta, open-PR/issue state, and 3ngram context computed once",
+        focus=("audit", "context", "github"),
+    ),
 )
 
 ENGRAM_EXTENSION_SPECS: tuple[ExtensionSpec, ...] = (

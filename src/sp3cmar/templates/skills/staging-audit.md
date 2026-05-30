@@ -13,50 +13,35 @@ Audit the current project's readiness to merge staging into main. Aggregate open
 
 ## Steps
 
-### 1. Open PR inventory
+### 1. Gather shared context (once)
 
-Run in parallel:
+Dispatch the `context-gather` agent for the slices this audit needs:
+`delta`, `engram`, and — unless `quick` is passed — `prs`. In `quick`
+mode, omit the `prs` slice (quick = delta + blockers only, no PR
+deep-dive). Pass `--skip-engram` through if present.
 
-```
-gh pr list --state open --json number,title,author,baseRefName,headRefName,labels,reviewDecision,statusCheckRollup,createdAt,updatedAt
-```
+It returns the **shared bundle** — open-PR inventory, active
+blockers/commitments/overdue/stale, and the staging↔main delta — computed
+**once** so this skill, `milestone-audit`, `doc-audit`, and `post-merge`
+do not each re-run the same GitHub + 3ngram queries.
 
-For each PR:
-- Summarize purpose (1 line)
-- Note CI status (passing/failing/pending)
-- Note review status (approved/changes-requested/pending)
-- Flag any PR older than 7 days without activity as **stale**
-- Identify dependency chains (PRs that must merge in order)
+Consume its output for the next steps. Do NOT re-run `gh pr list`,
+`git diff main...staging`, `git log main..staging`, or the
+`engram://` resource reads yourself — the agent already did.
 
-### 2. Blockers and commitments (3ngram / Engram)
+Unless `quick` was passed, from its `### Open PRs` table confirm per PR:
+purpose, CI status, review status, the **stale** flag (>7 days, no
+activity), and dependency chains. (In `quick` mode the PR slice is
+skipped, so there is no PR deep-dive.)
 
-Skip this step if `--skip-engram` is passed or if Engram MCP is not connected.
+From its `### 3ngram` block, filter blockers/commitments/overdue/stale to
+the current project before extracting anything that affects merge readiness.
 
-Read Engram MCP resources for project-related context:
-- `engram://blockers` — active blockers
-- `engram://commitments` — open commitments
-- `engram://overdue` — overdue items
-- `engram://stale` — stale commitments
+From its `### Delta (main ← staging)` block, take the file/commit counts,
+per-commit types, domain grouping, and the migration / breaking-change /
+config-env flags.
 
-Filter to the current project before extracting anything that affects merge readiness.
-
-### 3. Staging ↔ main delta
-
-Run:
-```
-git diff main...staging --stat
-git log main..staging --oneline
-```
-
-Analyze:
-- Total files changed, insertions, deletions
-- List each commit with its type (feat/fix/chore/refactor)
-- Group changes by domain (backend / frontend / migrations / infra / CI)
-- Flag **migrations** — these need special merge-order attention
-- Flag **breaking changes** or schema changes
-- Flag **config/env changes** that need deployment coordination
-
-### 4. Risk assessment
+### 2. Risk assessment
 
 For each category, rate risk (low / medium / high) with justification:
 
@@ -68,7 +53,7 @@ For each category, rate risk (low / medium / high) with justification:
 | Dependency conflicts | Package version mismatches between branches? |
 | Deployment order | Must backend deploy before frontend, or vice versa? |
 
-### 5. Synthesize roadmap
+### 3. Synthesize roadmap
 
 Produce this structured output:
 

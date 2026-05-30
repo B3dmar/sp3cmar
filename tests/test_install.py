@@ -109,6 +109,7 @@ class TestInstallAgents:
             "reviewer-debt.md",
             "migration-check.md",
             "frontend-acceptance.md",
+            "context-gather.md",
         ]
 
         for agent in expected_agents:
