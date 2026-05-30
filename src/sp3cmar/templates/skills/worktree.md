@@ -50,6 +50,14 @@ Manage git worktrees for parallel development. Worktrees live inside the repo at
    that inherit the orchestrator's main-worktree cwd and so slip past the
    path check.
 
+   The shell-prefix form above only reliably reaches **shell-launched**
+   sub-agents. For **in-process** `Task`-tool sub-agents there is no shell, so
+   the recommended harness-level mechanism is to set `ENGRAM_HOOK_ROLE=subagent`
+   in the global `~/.claude/settings.json` `env` block so hook subprocesses
+   inherit it on any launch path. Whether in-process `Task` dispatch actually
+   propagates the var to the engram-hook subprocess is **UNVERIFIED** and
+   tracked by **#29** (verify with `ENGRAM_HOOK_DEBUG=1` + a real `Task` run).
+
 ### `done <branch-name>`
 
 1. Remove worktree:
