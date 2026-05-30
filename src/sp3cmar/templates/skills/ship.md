@@ -68,7 +68,21 @@ Review the changed files and determine if documentation updates are needed:
 - **If docs need updating**: make the doc changes now, before committing. Keep updates minimal and in the canonical location (don't create new docs when an existing one covers the topic).
 - **If no docs are affected**: proceed — not every change needs doc updates.
 
-### 5. Commit
+### 5. CHANGELOG entry
+
+Before committing, ensure the change is recorded in the project's changelog. This guard prevents a change from reaching a PR without a corresponding CHANGELOG entry.
+
+- **Detect the changelog**: look for a `CHANGELOG.md` at the repo root. If none exists, skip this step — do not create one.
+- **Check for an existing entry**: scan the `[Unreleased]` section (or the current version section if the project keeps a live top section) for a line that already describes this change. If a matching entry is already present, do NOT duplicate it — proceed.
+- **If no entry exists**: add a concise one-line entry summarizing the change, categorized under `Added`, `Fixed`, or `Changed`:
+  - `Added` — new features, commands, skills, or endpoints
+  - `Fixed` — bug fixes
+  - `Changed` — modified behavior, defaults, or refactors with user-visible effect
+  - Place the entry under the appropriate heading in the `[Unreleased]` section (create the heading if the section lacks it). Keep it short and user-facing — mirror the commit subject's intent.
+- **Release / version-bump ships**: if this ship is a release or version-bump PR (the change moves `[Unreleased]` content to a versioned, dated heading or bumps the project version), place the entry under the versioned (released) section rather than leaving it in `[Unreleased]`.
+- Make the changelog edit now, before the Commit step, so it is staged and committed alongside the change.
+
+### 6. Commit
 
 - Stage changed files (prefer specific files over `git add -A`)
 - Do NOT stage files that look like secrets (.env, credentials, tokens)
@@ -80,12 +94,12 @@ Review the changed files and determine if documentation updates are needed:
 
 If `$ARGUMENTS` is `commit`, stop here.
 
-### 6. Push
+### 7. Push
 
 - Push to remote with `-u` flag to set upstream tracking
 - If push fails due to divergence, inform the user — do NOT force push
 
-### 7. Create PR
+### 8. Create PR
 
 - Determine base branch:
   - If current branch is `staging` and `$ARGUMENTS` is `main`: base = `main`
@@ -99,7 +113,7 @@ If `$ARGUMENTS` is `commit`, stop here.
   - Body: summary bullets, test plan, linked issues (with correct keywords per above)
 - Output the PR URL
 
-### 8. CI status check
+### 9. CI status check
 
 After push/PR creation, check CI status:
 
@@ -110,6 +124,6 @@ After push/PR creation, check CI status:
   - **FAIL**: Show failed run summary with `gh run view <id> --log-failed | tail -30`
 - This is informational only — does not block the ship
 
-### 9. Watch CI and auto-fetch failures
+### 10. Watch CI and auto-fetch failures
 
 After pushing, if a CI run starts within 30 seconds (`gh run list --branch <branch> --limit 1 --json status,conclusion,databaseId`), watch it via `gh run watch <run_id> --exit-status`. If the run concludes with `failure`, immediately fetch failed-job logs via `gh run view <run_id> --log-failed`, parse the failure, and propose a fix inline. Do NOT ask the user to paste CI output — that violates the global CLAUDE.md "CI failure workflow" rule. If multiple runs trigger (e.g. CI + Project Sync), watch the primary `CI` workflow first.
