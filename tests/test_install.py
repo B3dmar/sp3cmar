@@ -52,6 +52,7 @@ class TestInstallSkills:
             "html-plan.md",
             # Spec & review
             "review.md",
+            "bot-review.md",
             # Ship
             "release-notes.md",
             # Growth

@@ -255,6 +255,23 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
     ),
     # review-contract and review-test merged into unified /sp3cmar-review
     SkillSpec(
+        slug="bot-review",
+        command="/sp3cmar-bot-review",
+        description="Read inbound automated PR-review comments (CodeRabbit, Vercel Agent, Copilot, CodeQL), triage each, and report a merge-gate verdict",
+        category="Spec & Review",
+        providers=("claude", "codex"),
+        triggers=(
+            "bot review",
+            "PR bot comments",
+            "automated review comments",
+            "coderabbit",
+            "merge gate",
+            "check bot comments before merge",
+        ),
+        requires_tools=("git", "gh"),
+        tags=("review", "github", "merge-gate"),
+    ),
+    SkillSpec(
         slug="release-notes",
         command="/sp3cmar-release-notes",
         description="Generate release notes from staging-to-main diff",
