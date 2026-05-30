@@ -25,7 +25,10 @@ It does **not** reimplement capabilities that already exist as skills. It
 `$ARGUMENTS` controls behavior:
 - *(empty)* — run the full pipeline for the current topic / issue on the current branch
 - `<issue-number>` — drive the named GitHub issue end to end
-- `--from <phase>` — resume the pipeline at a named phase (e.g. `--from review`)
+- `--from <phase>` — resume the pipeline at a named phase (e.g. `--from review`).
+  **Resume contract:** assume every phase before `<phase>` already passed its exit
+  gate; the orchestrator re-runs phase 0 (re-pulls context) before resuming so the
+  `## Inherited Context` block is fresh, then continues from `<phase>` onward.
 - `--dry-run` — print the routing decision and phase plan without dispatching work
 
 ## Roles
@@ -37,8 +40,8 @@ There are exactly two roles in this pipeline.
 **HARD RULE: the orchestrator NEVER edits code or files itself.** The
 orchestrator only:
 1. **Pulls context** once (phase 0).
-2. **Fans out** to sub-agents (or runs a phase inline when the complexity router
-   says so).
+2. **Fans out** to sub-agents (or dispatches a single sub-agent — never edits
+   itself — when the complexity router says no fan-out).
 3. **Runs gates** (acceptance, verify, the risk-routed gate).
 4. **Synthesizes** sub-agent findings into a single decision and report.
 
@@ -91,13 +94,13 @@ routing decision explicit and state it in the report:
 
 | Change shape | Route |
 |--------------|-------|
-| Trivial / single-file / mechanical (typo, one-line fix, config bump) | **INLINE** — orchestrator delegates to a single sub-agent or, for genuinely trivial edits, runs the change in one pass; no fan-out |
+| Trivial / single-file / mechanical (typo, one-line fix, config bump) | **NO FAN-OUT** — delegate to a **single** sub-agent (even genuinely trivial edits go through a sub-agent; the orchestrator never edits directly) |
 | Multiple genuinely parallel, isolatable tasks | **FAN-OUT** — one sub-agent per task, each in its own git worktree |
 | Sequential / tightly-coupled tasks that share files | **INLINE / serialized** — do not fan out; conflicting worktrees are not parallelizable |
 
 State the decision verbatim, e.g.: *"Complexity router: 3 independent tasks
 touching disjoint files → FAN-OUT (3 worktrees)."* or *"Complexity router:
-single-file change → INLINE (no fan-out)."*
+single-file change → single sub-agent, no fan-out."*
 
 ## Phase Graph (declarative)
 
@@ -109,7 +112,7 @@ its inputs, and its exit gate.
 | 0 | **context** | `/sp3cmar-context` | Orchestrator pulls 3ngram + GitHub + code once; builds the `## Inherited Context` block | Context block exists |
 | 1 | **specify** | `/sp3cmar-acceptance` | Define / verify EARS-style acceptance criteria and issue linkage | Every AC is explicit and testable |
 | 2 | **plan** | — | Break work into **atomic, independently-testable tasks**; run the **complexity router** | Routing decision stated; task list frozen |
-| 3 | **implement** | `/sp3cmar-worktree` | **Fan out** one sub-agent per task, each in its **own git worktree** (or run inline per the router) | All tasks produce committed branches |
+| 3 | **implement** | `/sp3cmar-worktree` | **Fan out** one sub-agent per task, each in its **own git worktree** (or a single sub-agent when the router says no fan-out) | All tasks produce committed branches |
 | 4 | **verify** | `/sp3cmar-acceptance` | Run **tests** for each task; **optional advisory** frontend-acceptance step (Slice 2; non-blocking) | Tests green (BLOCK on red) |
 | 5 | **review** | `/sp3cmar-review` | Dispatch **delegated leaf reviewers** (the refactored `review-pr` agent) and synthesize | Findings synthesized |
 | 6 | **resolve-bots** | `/sp3cmar-bot-review` | Triage automated PR-review bot comments; re-poll until ~10-minute quiescence | No unresolved security/bug bot comments |

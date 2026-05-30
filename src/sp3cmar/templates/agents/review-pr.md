@@ -30,7 +30,7 @@ The orchestrator:
    agents (Step 4), passing each the shared diff and context — it does **not**
    evaluate standards, ship-stoppers, work items, or code quality itself.
 3. **Collects and synthesizes** sub-agent findings into one consolidated report
-   and merge recommendation (Step 8).
+   and merge recommendation (Step 6).
 
 If the orchestrator finds itself reading a standards doc to judge a violation, or
 running a WI's tests directly, that work belongs in the corresponding sub-agent —
@@ -303,7 +303,7 @@ If not met:
 
 Wait for any conditional sub-agents to complete before synthesizing.
 
-### Key-Files Collection
+### Step 5: Key-Files Collection
 
 After all sub-agents complete:
 1. Iterate through sub-agent outputs in dispatch order
@@ -314,7 +314,7 @@ After all sub-agents complete:
 6. If a file doesn't exist, skip with warning and continue
 7. Use the collected context for the synthesis phase
 
-### Step 8: Synthesize Findings
+### Step 6: Synthesize Findings
 
 Output: "Consolidating findings from {completed_count} sub-agents (6 core + {conditional_count} conditional)..."
 
@@ -356,7 +356,7 @@ dedicated "Needs Investigation" section at the end of the report with the label
 - Only WARNING/INFO → **"SAFE TO MERGE (with notes)"**
 - No findings → **"SAFE TO MERGE"**
 
-### Step 8b: Simplify Offer (non-CI only)
+### Step 6b: Simplify Offer (non-CI only)
 
 If the merge recommendation is **"SAFE TO MERGE (with notes)"** (WARNING/INFO findings, no BLOCKING):
 
@@ -364,7 +364,7 @@ If the merge recommendation is **"SAFE TO MERGE (with notes)"** (WARNING/INFO fi
 2. If approved: run `/simplify` on the changed files from Step 3, then re-run lint
 3. If declined or in `--ci` mode: skip
 
-### Step 9: Output
+### Step 7: Output
 
 #### Terminal Output (Default)
 
@@ -431,7 +431,7 @@ With `--strict`:
 - `0`: No findings at all
 - `1`: Any findings (BLOCKING, WARNING, or INFO)
 
-### Step 10: Work Item Generation (`--create-wi`)
+### Step 8: Work Item Generation (`--create-wi`)
 
 For each BLOCKING or critical finding, create a work item using the scaffold CLI:
 
