@@ -16,7 +16,9 @@ Audit the current project's readiness to merge staging into main. Aggregate open
 ### 1. Gather shared context (once)
 
 Dispatch the `context-gather` agent for the slices this audit needs:
-`prs`, `engram`, and `delta`. Pass `--skip-engram` through if present.
+`delta`, `engram`, and — unless `quick` is passed — `prs`. In `quick`
+mode, omit the `prs` slice (quick = delta + blockers only, no PR
+deep-dive). Pass `--skip-engram` through if present.
 
 It returns the **shared bundle** — open-PR inventory, active
 blockers/commitments/overdue/stale, and the staging↔main delta — computed
@@ -27,8 +29,10 @@ Consume its output for the next steps. Do NOT re-run `gh pr list`,
 `git diff main...staging`, `git log main..staging`, or the
 `engram://` resource reads yourself — the agent already did.
 
-From its `### Open PRs` table, confirm per PR: purpose, CI status, review
-status, the **stale** flag (>7 days, no activity), and dependency chains.
+Unless `quick` was passed, from its `### Open PRs` table confirm per PR:
+purpose, CI status, review status, the **stale** flag (>7 days, no
+activity), and dependency chains. (In `quick` mode the PR slice is
+skipped, so there is no PR deep-dive.)
 
 From its `### 3ngram` block, filter blockers/commitments/overdue/stale to
 the current project before extracting anything that affects merge readiness.
