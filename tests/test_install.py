@@ -85,3 +85,33 @@ class TestInstallSkills:
             cmd, desc = skill_info[skill]
             assert cmd.startswith("/sp3cmar-"), f"Bad command format: {cmd}"
             assert len(desc) > 10, f"Description too short: {desc}"
+
+
+class TestInstallAgents:
+    """Test install includes expected agents."""
+
+    def test_agents_list_complete(self):
+        """AGENTS list has expected agents and count."""
+        from sp3cmar.constants import AGENTS
+
+        expected_agents = [
+            "feature.md",
+            "review-pr.md",
+            "review-codebase.md",
+            "review-kill.md",
+            "docs.md",
+            "reviewer-correctness.md",
+            "reviewer-hardcoded.md",
+            "reviewer-contract.md",
+            "reviewer-env.md",
+            "reviewer-test.md",
+            "reviewer-deps.md",
+            "reviewer-debt.md",
+            "migration-check.md",
+            "frontend-acceptance.md",
+        ]
+
+        for agent in expected_agents:
+            assert agent in AGENTS, f"Missing agent: {agent}"
+
+        assert len(AGENTS) == len(expected_agents)
