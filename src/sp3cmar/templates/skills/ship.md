@@ -73,13 +73,16 @@ Review the changed files and determine if documentation updates are needed:
 Before committing, ensure the change is recorded in the project's changelog. This guard prevents a change from reaching a PR without a corresponding CHANGELOG entry.
 
 - **Detect the changelog**: look for a `CHANGELOG.md` at the repo root. If none exists, skip this step — do not create one.
-- **Check for an existing entry**: scan the `[Unreleased]` section (or the current version section if the project keeps a live top section) for a line that already describes this change. If a matching entry is already present, do NOT duplicate it — proceed.
-- **If no entry exists**: add a concise one-line entry summarizing the change, categorized under `Added`, `Fixed`, or `Changed`:
+- **Check for an existing entry**: scan the `[Unreleased]` section (or the current version section if the project keeps a live top section) for a line that already describes this change. Match against the commit subject line — treat an entry as a duplicate only when it covers the same change as the subject, so legitimately-new entries are not suppressed. If a matching entry is already present, do NOT duplicate it — proceed.
+- **Skip path**: if the change has no user-visible effect (a `chore`/`test`/`ci`/`docs`-type commit, internal refactor, or tooling tweak), it may skip the changelog entry. Honor an explicit `--no-changelog` escape, and skip automatically for non-user-facing commits. When skipping, note briefly why no entry was added.
+- **If no entry exists**: add a concise one-line entry summarizing the change, categorized under `Added`, `Changed`, `Fixed`, `Removed`, or `Security`:
   - `Added` — new features, commands, skills, or endpoints
-  - `Fixed` — bug fixes
   - `Changed` — modified behavior, defaults, or refactors with user-visible effect
+  - `Fixed` — bug fixes
+  - `Removed` — deleted features, commands, or endpoints
+  - `Security` — vulnerability fixes or security-hardening changes
   - Place the entry under the appropriate heading in the `[Unreleased]` section (create the heading if the section lacks it). Keep it short and user-facing — mirror the commit subject's intent.
-- **Release / version-bump ships**: if this ship is a release or version-bump PR (the change moves `[Unreleased]` content to a versioned, dated heading or bumps the project version), place the entry under the versioned (released) section rather than leaving it in `[Unreleased]`.
+- **Release / version-bump ships**: if this ship is a release or version-bump PR (the change moves `[Unreleased]` content to a versioned, dated heading or bumps the project version), write the entry directly under the versioned section rather than the `[Unreleased]` section.
 - Make the changelog edit now, before the Commit step, so it is staged and committed alongside the change.
 
 ### 6. Commit
