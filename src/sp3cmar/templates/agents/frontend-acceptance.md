@@ -1,7 +1,6 @@
 ---
 name: frontend-acceptance
 description: Advisory validator that drives a real browser to check a frontend against a GitHub issue's acceptance criteria
-tools: [Read, Glob, Grep, Bash]
 model: sonnet
 ---
 
