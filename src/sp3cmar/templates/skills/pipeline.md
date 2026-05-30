@@ -86,6 +86,17 @@ repo). PUSH a finding back to 3ngram when done, tagged ["subagent","branch:<slug
 <the single task>
 ```
 
+**Sub-agent hook environment:** when launching a sub-agent, export
+`ENGRAM_HOOK_ROLE=subagent` in its environment. The engram-hook briefing
+binary early-returns (skips the 3ngram auto-pull) when
+`ENGRAM_HOOK_ROLE=subagent` OR the cwd is a secondary worktree.
+Task-dispatched sub-agents inherit the orchestrator's main-worktree cwd, so
+the path check alone misses them — the env var is the belt-and-suspenders
+that stops a sub-agent from re-pulling the briefing the orchestrator already
+holds (the Context Contract above). Set it whether you dispatch via the
+`Task` tool or spawn a separate `claude` process, e.g.
+`ENGRAM_HOOK_ROLE=subagent claude ...`.
+
 ## Complexity Router
 
 Fan-out is expensive (multi-agent runs cost roughly 15x the tokens of an inline

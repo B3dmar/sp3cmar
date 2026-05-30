@@ -40,6 +40,16 @@ Manage git worktrees for parallel development. Worktrees live inside the repo at
      claude
    ```
 
+   When the session in this worktree is itself a **sub-agent** launched by
+   an orchestrator (rather than an interactive session), export
+   `ENGRAM_HOOK_ROLE=subagent` for it, e.g.
+   `ENGRAM_HOOK_ROLE=subagent claude ...`. The engram-hook briefing binary
+   early-returns (skips the 3ngram auto-pull) when
+   `ENGRAM_HOOK_ROLE=subagent` OR the cwd is a secondary worktree; setting
+   the env var is the belt-and-suspenders for Task-dispatched sub-agents
+   that inherit the orchestrator's main-worktree cwd and so slip past the
+   path check.
+
 ### `done <branch-name>`
 
 1. Remove worktree:
@@ -97,6 +107,16 @@ Generate N batched worktree prompts (default: 6) by cross-referencing available 
    <detailed prompt with refs to roadmap items, GH issue numbers, and commitments>
 
    <STANDARD SUB-AGENT DIRECTIVES — injected verbatim into every generated prompt>
+   ## Hook environment
+   When launching this sub-agent, export `ENGRAM_HOOK_ROLE=subagent` in its
+   environment (e.g. `ENGRAM_HOOK_ROLE=subagent claude ...`). The engram-hook
+   briefing binary skips the 3ngram auto-pull when `ENGRAM_HOOK_ROLE=subagent`
+   OR the cwd is a secondary worktree; the env var is the belt-and-suspenders
+   for Task-dispatched sub-agents that inherit the orchestrator's
+   main-worktree cwd and so slip past the path check. The orchestrator has
+   already pulled context (see the Inherited Context block below) — the
+   sub-agent must not re-pull it.
+
    ## Inherited Context (from orchestrator — do NOT re-pull)
    Relevant prior decisions / blockers / patterns / gotchas for THIS worktree:
    - [<memory_id>] <one-line summary>        ← orchestrator pastes its per-worktree search hits here
