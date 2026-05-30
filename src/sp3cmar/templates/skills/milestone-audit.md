@@ -40,28 +40,40 @@ gh api repos/{owner}/{repo}/milestones
 
 ### 2. Gather shared context (once)
 
-Dispatch the `context-gather` agent for the `prs`, `issues`, and `engram`
-slices. Pass `--quick` through as `--skip-engram` for its 3ngram slice.
+Dispatch the `context-gather` agent for the slices this audit needs:
+`prs`, `prs-all`, `issues`, `engram`, and (unless `--quick`) `search`.
+- Pass `--quick` through as `--skip-engram` for its 3ngram slices.
+- Pass `--pr-base staging` so its `prs-all` slice covers open **and**
+  merged/closed PRs based on `staging` (this skill must see non-open PRs
+  to detect work merged to the wrong base / already merged / closed).
+- Unless `--quick`, pass `--search "<milestone title> release blockers
+  scope decisions"` so its `search` slice runs a free-text 3ngram lookup
+  keyed to this milestone — the structured `engram://` resources do not
+  cover semantic memory search.
 
-It returns the **shared bundle** — open-PR inventory, the all-state issue
-list, and active blockers/commitments/overdue/stale — computed **once** so
-this skill, `staging-audit`, `doc-audit`, and `post-merge` do not each
-re-run the same GitHub + 3ngram queries.
+It returns the **shared bundle** — open-PR inventory, all-state PR
+inventory, the all-state issue list, active blockers/commitments/overdue/
+stale, and the free-text memory matches — computed **once** so this skill,
+`staging-audit`, `doc-audit`, and `post-merge` do not each re-run the same
+GitHub + 3ngram queries.
 
-Consume its `### Issues` and `### Open PRs` blocks instead of re-running
-`gh issue list` or `gh pr list`, and its `### 3ngram` block instead of
-re-reading the `engram://` resources.
+Consume its `### Issues`, `### Open PRs`, and `### All-State PRs` blocks
+instead of re-running `gh issue list` or `gh pr list`, and its `### 3ngram`
++ `### Memory Search` blocks instead of re-reading the `engram://`
+resources or re-running `mcp__3ngram__search`.
 
 Then layer on this skill's **milestone-specific** gathering inline:
 - Narrow the issue set to the resolved milestone:
   `gh issue list --state all --milestone "<milestone>" --limit 200 --json number,title,state,labels,milestone,assignees,createdAt,updatedAt,closedAt,url`
-- Filter the shared open-PR bundle to PRs based on `staging`, or fetch
-  milestone-scoped PRs if needed.
+- Filter the shared all-state PR bundle (`### All-State PRs`) to PRs tied
+  to milestone issues — including merged/closed ones — to spot PRs merged
+  to the wrong base, already merged, or closed.
 - If the repo uses GitHub issue hierarchy, inspect parent/sub-issue
   metadata via `gh issue view` or GraphQL for epic/child issues.
 - Unless `--quick`: read roadmap/backlog/release notes files if present
   (`roadmap.md`, `backlog.md`, `docs/**/roadmap*`, `docs/**/release*`,
-  `.claude/plans/**`) and compare docs and memories to GitHub issue state.
+  `.claude/plans/**`) and compare docs and memories (including the
+  `### Memory Search` matches) to GitHub issue state.
 
 ### 3. Classify issues
 
