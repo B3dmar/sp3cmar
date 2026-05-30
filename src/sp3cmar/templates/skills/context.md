@@ -25,7 +25,7 @@ Run the following in **parallel** wherever possible.
 
 Skip if `--skip-engram` is set or the engram MCP is unavailable.
 
-- `mcp__3ngram__search_memories` with the topic — surfaces decisions, blockers, prior commitments, feedback memories
+- `mcp__3ngram__search` with the topic — surfaces decisions, blockers, prior commitments, feedback memories
 - `mcp__3ngram__search_content` with the topic — pulls indexed documents that mention it
 
 Filter to the current project/scope. Report each hit with one-line summary + `id` + memory_type.

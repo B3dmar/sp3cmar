@@ -66,7 +66,7 @@ Be conservative: if a candidate does not clearly match one type, skip it. False 
 For each session's time window, fetch what 3ngram persisted:
 
 ```python
-mcp__3ngram__search_memories(
+mcp__3ngram__search(
   query="",                       # empty → time-window filter only
   created_after=session.start,
   created_before=session.end,
@@ -87,7 +87,7 @@ Produce per-session and aggregate diffs:
 | **Spurious** | 3ngram memory has no candidate — likely over-capture |
 | **Partial** | Captured but wrong type / wrong scope |
 
-For matching use `mcp__3ngram__search_memories` with the candidate summary as the query, scoped to the session window — semantic match, not string match.
+For matching use `mcp__3ngram__search` with the candidate summary as the query, scoped to the session window — semantic match, not string match.
 
 ### 5. Aggregate + analyze
 
