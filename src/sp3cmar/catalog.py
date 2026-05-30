@@ -392,6 +392,12 @@ AGENT_SPECS: tuple[AgentSpec, ...] = (
         "Reviewer: Database migration safety",
         focus=("database", "migration"),
     ),
+    AgentSpec(
+        "frontend-acceptance",
+        "Frontend Acceptance",
+        "Advisory: drive a real browser to validate a frontend against issue acceptance criteria",
+        focus=("frontend", "acceptance", "browser"),
+    ),
 )
 
 ENGRAM_EXTENSION_SPECS: tuple[ExtensionSpec, ...] = (
