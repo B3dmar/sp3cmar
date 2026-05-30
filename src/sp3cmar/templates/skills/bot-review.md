@@ -66,8 +66,13 @@ gh api "repos/{owner}/{repo}/pulls/$PR/comments" --paginate
 # Issue-style PR comments (summary posts land here)
 gh api "repos/{owner}/{repo}/issues/$PR/comments" --paginate
 
-# Review threads with their resolved/unresolved state (GraphQL)
-gh api graphql -f query='
+# Review threads with their resolved/unresolved state (GraphQL).
+# NOTE: `gh api graphql` does NOT auto-substitute the `{owner}`/`{repo}` braces
+# (that only works for REST paths like `gh api repos/{owner}/{repo}/...`), and the
+# `:owner`/`:repo` colon form is passed literally too. Resolve them explicitly and
+# pass them as typed GraphQL variables with `-f`.
+read OWNER REPO < <(gh repo view --json owner,name --jq '.owner.login + " " + .name')
+gh api graphql -f owner="$OWNER" -f repo="$REPO" -F pr="$PR" -f query='
   query($owner:String!,$repo:String!,$pr:Int!){
     repository(owner:$owner,name:$repo){
       pullRequest(number:$pr){
@@ -79,7 +84,7 @@ gh api graphql -f query='
         }
       }
     }
-  }' -F owner=:owner -F repo=:repo -F pr="$PR"
+  }'
 ```
 
 For CodeQL / GitHub Advanced Security findings, also check the code-scanning
@@ -107,8 +112,12 @@ outcomes:
 Reply to comments with `gh`:
 
 ```bash
-# Reply on an inline review comment (in_reply_to = the comment id)
-gh api "repos/{owner}/{repo}/pulls/$PR/comments" -f body="Fixed in $SHA" -F in_reply_to=$COMMENT_ID
+# Reply on an inline review comment, threaded under $COMMENT_ID.
+# Use the dedicated replies endpoint (the current, documented way to reply):
+#   POST /repos/{owner}/{repo}/pulls/{pr}/comments/{comment_id}/replies
+# (the old form — POST .../pulls/{pr}/comments with -F in_reply_to=$COMMENT_ID —
+# still works but is the legacy path; prefer the replies endpoint below.)
+gh api "repos/{owner}/{repo}/pulls/$PR/comments/$COMMENT_ID/replies" -f body="Fixed in $SHA"
 
 # Or a general PR comment
 gh pr comment "$PR" --body "Won't fix: <one-line reason>"
@@ -154,6 +163,10 @@ Produce a single explicit verdict using these rules:
 - An **unresolved** bot comment tagged **security** or **bug** → the PR is
   **MERGE-BLOCKING**.
 - Comments tagged **style** / **nit** are **advisory only** — they never block.
+- Comments tagged **other** (or any tag you could not confidently map to
+  security/bug) are treated as **advisory only** — they never block. When in
+  doubt about a tag, prefer `other` over `bug`/`security` so the gate does not
+  block on a guess; surface genuinely ambiguous items as `uncertain` instead.
 - `uncertain` items tagged security/bug also block until a human resolves them.
 - If every blocking comment has been fixed (true-positive + committed) or
   justified (false-positive), and the PR is settled, the verdict is **CLEAR**.
