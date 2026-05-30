@@ -4,14 +4,37 @@ description: Review PR against project standards, ship-stoppers, and work items
 
 # PR Review
 
-Review pull request against project standards, ship-stoppers, and work items.
+You are the **PR Review Orchestrator** for this repository.
+
+Review a pull request against project standards, ship-stoppers, and work items.
+The orchestrator **does not perform the checks inline** — it loads shared context,
+**dispatches a sub-agent per review dimension**, and **synthesizes** their findings
+into a single merge recommendation. This mirrors how `review-codebase` dispatches
+its sub-reviewers.
 
 ## Overview
 
-This skill performs a comprehensive PR review that connects to:
-1. **Project standards** — Check changes against ARCHITECTURE.md, CONTRIBUTING.md, SECURITY.md, CLAUDE.md, etc.
-2. **Kill Reports** — Detect if PR addresses or introduces ship-stoppers
+This review connects to:
+1. **Project standards** — Changes vs ARCHITECTURE.md, CONTRIBUTING.md, SECURITY.md, CLAUDE.md, etc.
+2. **Kill Reports** — Whether the PR addresses or introduces ship-stoppers
 3. **Work Items** — Verify "Fixes WI-XXX" claims by running actual tests
+4. **Code Quality** — Security, performance, and error-handling issues in the diff
+
+Each of the four is run by a **delegated sub-agent**, not inline.
+
+## Orchestrator role
+
+The orchestrator:
+1. Runs pre-flight checks and loads shared context (Steps 1–3).
+2. **Dispatches** the four dimension sub-agents plus the always-on reviewer
+   agents (Step 4), passing each the shared diff and context — it does **not**
+   evaluate standards, ship-stoppers, work items, or code quality itself.
+3. **Collects and synthesizes** sub-agent findings into one consolidated report
+   and merge recommendation (Step 8).
+
+If the orchestrator finds itself reading a standards doc to judge a violation, or
+running a WI's tests directly, that work belongs in the corresponding sub-agent —
+re-dispatch it instead of inlining.
 
 ## Arguments
 
@@ -22,7 +45,9 @@ This skill performs a comprehensive PR review that connects to:
 | `--json` | Output machine-readable JSON |
 | `--ci` | CI mode: exit non-zero on BLOCKING findings |
 | `--strict` | With --ci: exit non-zero on ANY finding |
+| `--sequential` | Dispatch sub-agents one at a time (debug/fallback) |
 | `--create-wi` | Create work items for critical findings |
+
 ## Instructions
 
 ### Step 1: Pre-Flight Checks
@@ -34,17 +59,20 @@ Before starting, verify:
 ```bash
 # Check branch
 git branch --show-current
-
 ```
 
 **If pre-flight fails:**
 - Not on feature branch → "ERROR: Must be on a feature branch, not main/master"
 
-### Step 2: Load Context
+### Step 2: Load Shared Context
 
-#### 2.1 Load Project Standards (Optional)
+The orchestrator loads context **once** and passes it into every dispatched
+sub-agent (so sub-agents do not each re-discover it).
 
-Search for project standards in common locations (first match wins per category):
+#### 2.1 Locate Project Standards (paths only)
+
+Find — but do not yet evaluate — project standards. The Standards sub-agent reads
+and judges them; the orchestrator only resolves the paths.
 
 ```bash
 # Architecture docs
@@ -63,30 +91,24 @@ ls CLAUDE.md .cursorrules .github/copilot-instructions.md AGENTS.md 2>/dev/null
 ls sp3cmar/constitution/enforced 2>/dev/null || ls sp3cmar/docs-index 2>/dev/null
 
 # If nothing found:
-echo "INFO: No project standards docs found — reviewing against general best practices only"
+echo "INFO: No project standards docs found — Standards sub-agent reviews against general best practices only"
 ```
 
-Load whatever is found. These form the "project standards" baseline for Agent 1.
-
-#### 2.2 Load Latest Kill Report (Optional)
+#### 2.2 Locate Latest Kill Report (path only)
 
 ```bash
-# Find latest kill report
 ls -t sp3cmar/reviews/kill-reports/v*/REPORT.md 2>/dev/null | head -1
 ```
 
-- **If found:** Load and extract ship-stopper evidence (file:line references)
-- **If not found:** Skip ship-stopper checking with info message: "INFO: No kill report found, skipping ship-stopper check"
+- **If found:** pass the path to the Ship-Stopper sub-agent.
+- **If not found:** Note "INFO: No kill report found, skipping ship-stopper check".
 
-#### 2.3 Parse Work Item References (Optional)
+#### 2.3 Parse Work Item References (paths only)
 
 Search PR description and commit messages for patterns:
-- `Fixes WI-XXX`
-- `Closes WI-XXX`
-- `Resolves WI-XXX`
-- `Implements WI-XXX`
+- `Fixes WI-XXX`, `Closes WI-XXX`, `Resolves WI-XXX`, `Implements WI-XXX`
 
-For each referenced WI, locate the file:
+For each referenced WI, locate the file (pass paths to the Work-Item sub-agent):
 ```
 sp3cmar/work-items/WI-*.md
 sp3cmar/features/FEAT-*/work-items/WI-*.md
@@ -106,51 +128,41 @@ git diff ${BASE_BRANCH}...HEAD --name-only
 git diff ${BASE_BRANCH}...HEAD
 ```
 
-Parse diff into:
-- Changed files list
-- Per-file changes with line numbers
+Parse the diff into a changed-files list and per-file changes. This diff is the
+shared payload handed to every sub-agent.
 
-### Steps 4-7: Parallel Agent Dispatch
+### Step 4: Dispatch Review Sub-Agents
 
-**EXECUTION MODE:** Check for `--sequential` flag in arguments.
-- If `--sequential`: Execute Steps 4, 5, 6, 7 in order, one at a time
-- Otherwise: Execute all 4 agents IN PARALLEL using separate Task tool calls in a single response
+**EXECUTION MODE:** Check for `--sequential` in arguments.
+- If `--sequential`: dispatch the sub-agents one at a time.
+- Otherwise: dispatch them IN PARALLEL using separate Task tool calls in a single
+  response.
 
-Output: "Dispatching 6 review agents in parallel (+ conditional agents if applicable)..."
+Output: "Dispatching review sub-agents (4 dimension + always-on reviewers + conditional)..."
+
+Each dispatch passes the sub-agent: the **full diff** and **changed-files list**
+from Step 3, plus the relevant context paths from Step 2. The orchestrator does
+**not** perform any of these checks itself.
 
 ### [PARALLEL-START: id=pr-review-agents]
 
-IMPORTANT: Invoke the following 6 agents as parallel Task tool calls. Each agent should be a separate Task invocation in the SAME response. Do NOT wait for one agent to complete before starting the next.
+IMPORTANT: Invoke the following as parallel Task tool calls in the SAME response.
+Do NOT wait for one sub-agent to complete before starting the next. Do NOT inline
+any of these checks in the orchestrator.
 
-### [PARALLEL] Step 4: Project Standards Review (Agent 1)
+### [PARALLEL] Sub-Agent 1 — Project Standards (delegated)
 
-For each changed file, check against loaded project standards from Step 2.1.
+Dispatch a **Project Standards reviewer** sub-agent. Provide it the diff, the
+changed-files list, and the standards paths from Step 2.1.
 
-**Check ARCHITECTURE.md (if loaded):**
-- Layer violations (e.g., handler calling DB directly)
-- Dependency direction violations
-- Module boundary violations
+Its task: read the loaded standards and, for each changed file, flag violations:
+- **ARCHITECTURE.md** — layer violations, dependency-direction violations, module boundaries
+- **CONTRIBUTING.md** — style/naming/pattern violations beyond what linters catch
+- **SECURITY.md** — auth/authz bypass, input-validation gaps, secrets exposure, SQLi/XSS
+- **CLAUDE.md / .cursorrules** — flagged anti-patterns, required-pattern omissions
+- If no standards docs were found → review against general best practices and note it.
 
-**Check CONTRIBUTING.md (if loaded):**
-- Code style violations beyond what linters catch
-- Naming convention violations
-- Pattern violations (e.g., "always use repository pattern for DB access")
-
-**Check SECURITY.md (if loaded):**
-- Auth/authz bypass
-- Input validation gaps
-- Secrets exposure
-- SQL injection / XSS patterns
-
-**Check CLAUDE.md / .cursorrules (if loaded):**
-- Anti-patterns flagged in project instructions
-- Required patterns not followed
-
-**If no standards docs found:**
-- Review against general engineering best practices only
-- Note: "No project standards docs found — findings based on general best practices"
-
-**Output format:**
+**Sub-agent output format:**
 ```markdown
 ### Standards Findings
 
@@ -160,18 +172,16 @@ For each changed file, check against loaded project standards from Step 2.1.
 | WARNING | src/utils/auth.py:23 | Missing input validation | SECURITY.md: "Validate all inputs" |
 ```
 
-### [PARALLEL] Step 5: Ship-Stopper Check (Agent 2)
+### [PARALLEL] Sub-Agent 2 — Ship-Stopper Check (delegated)
 
-If kill report was loaded:
+Dispatch a **Ship-Stopper reviewer** sub-agent. Provide it the diff, the
+changed-files list, and the kill-report path from Step 2.2.
 
-**Extract ship-stopper evidence** from the report (file:line references)
+Its task (only if a kill report was found): extract ship-stopper evidence
+(file:line), then compare against the PR — does it modify referenced files,
+introduce NEW matching violations, or potentially RESOLVE a ship-stopper?
 
-**Compare against PR changes:**
-- Does PR modify files referenced in ship-stoppers?
-- Does PR introduce NEW violations matching ship-stopper patterns?
-- Does PR potentially RESOLVE a ship-stopper?
-
-**Output format:**
+**Sub-agent output format:**
 ```markdown
 ### Ship-Stopper Findings
 
@@ -181,20 +191,22 @@ If kill report was loaded:
 | INFO | Missing tenant isolation | src/api/queries.py:45 | PR modifies this file - verify fix |
 ```
 
-If no kill report: Skip with "INFO: No kill report found, skipping ship-stopper check"
+If no kill report: the sub-agent reports "INFO: No kill report found, skipping ship-stopper check".
 
-### [PARALLEL] Step 6: Work Item Verification (Agent 3)
+### [PARALLEL] Sub-Agent 3 — Work Item Verification (delegated)
 
-For each referenced work item:
+Dispatch a **Work-Item Verification reviewer** sub-agent. Provide it the WI paths
+from Step 2.3.
 
-1. **Load the WI file** and extract test files from "Acceptance Criteria" section
-2. **Run the tests:**
+Its task, for each referenced work item:
+1. Load the WI file; extract test files from its "Acceptance Criteria" section.
+2. Run the tests:
    ```bash
    pytest tests/{test_file}.py -v --tb=short
    ```
-3. **Report results:**
+3. Report results with actual test output.
 
-**Output format:**
+**Sub-agent output format:**
 ```markdown
 ### Work Item Verification
 
@@ -205,32 +217,23 @@ For each referenced work item:
 | WI-003-003 | NOT VERIFIABLE | (no tests found) | Tests required |
 ```
 
-- **Tests pass** → "WI-XXX acceptance criteria verified"
-- **Tests fail** → BLOCKING status with failure details
-- **No tests** → "Tests not found - WI not verifiable"
+- Tests pass → "WI-XXX acceptance criteria verified"
+- Tests fail → BLOCKING with failure details
+- No tests → "Tests not found - WI not verifiable"
 
-If no WI referenced: Skip with "INFO: No work item references found"
+If no WI referenced: the sub-agent reports "INFO: No work item references found".
 
-### [PARALLEL] Step 7: Code Quality Review (Agent 4)
+### [PARALLEL] Sub-Agent 4 — Code Quality (delegated)
 
-Review diff for general code quality:
+Dispatch a **Code Quality reviewer** sub-agent. Provide it the diff and
+changed-files list.
 
-**Security:**
-- OWASP top 10 patterns
-- Hardcoded secrets
-- Unsafe deserialization
+Its task: review the diff for general code quality:
+- **Security:** OWASP top 10 patterns, hardcoded secrets, unsafe deserialization
+- **Performance:** N+1 queries, missing indexes, unbounded loops
+- **Error Handling:** bare excepts, missing handling, silent failures
 
-**Performance:**
-- N+1 queries
-- Missing indexes
-- Unbounded loops
-
-**Error Handling:**
-- Bare except clauses
-- Missing error handling
-- Silent failures
-
-**Output format:**
+**Sub-agent output format:**
 ```markdown
 ### Code Quality Findings
 
@@ -240,13 +243,10 @@ Review diff for general code quality:
 | INFO | src/utils/cache.py:12 | Unbounded cache | Add TTL or max size |
 ```
 
-### [PARALLEL] Step 7b: Hardcoded Values Review (Agent 5 — Always)
+### [PARALLEL] Sub-Agent 5 — Hardcoded Values (always)
 
-Dispatch the `reviewer-hardcoded` agent to scan the diff for hardcoded values that should be configuration.
-
-Provide the agent with:
-- The full diff from Step 3
-- The changed files list
+Dispatch the `reviewer-hardcoded` agent with the full diff and changed-files list
+to scan for hardcoded values that should be configuration.
 
 **Output format:**
 ```markdown
@@ -257,13 +257,10 @@ Provide the agent with:
 | 1 | WARNING | 85 | Hardcoded API URL in handler | `src/api/client.py:23` |
 ```
 
-### [PARALLEL] Step 7e: Correctness Review (Agent 6 — Always)
+### [PARALLEL] Sub-Agent 6 — Correctness (always)
 
-Dispatch the `reviewer-correctness` agent to review for bugs, logic errors, edge cases, and functional correctness.
-
-Provide the agent with:
-- The full diff from Step 3
-- The changed files list
+Dispatch the `reviewer-correctness` agent with the full diff and changed-files
+list to review for bugs, logic errors, edge cases, and functional correctness.
 
 **Output format:**
 ```markdown
@@ -276,61 +273,59 @@ Provide the agent with:
 
 ### [PARALLEL-END: id=pr-review-agents]
 
-After all Task calls complete, proceed to conditional agents.
+After all Task calls complete, proceed to conditional dispatch.
 
-### Steps 7c-7d: Conditional Agent Dispatch
+### Steps 4c-4d: Conditional Sub-Agent Dispatch
 
-Check the changed files list from Step 3 and dispatch additional agents if conditions are met.
+Check the changed-files list and dispatch additional sub-agents if conditions are met.
 
-#### Step 7c: API Contract Review (Agent 6 — Conditional)
+#### Step 4c: API Contract Review (Conditional)
 
 **Condition:** Diff contains BOTH frontend files (`*.ts`, `*.tsx`, `*.js`, `*.jsx`, `*.vue`, `*.svelte`) AND backend files (`*.py`, `*.go`, `*.rs`, `*.java`, `*.rb`, `routes.*`, `api.*`).
 
-If condition met:
+If met:
 - Output: "Frontend + backend changes detected — dispatching contract reviewer..."
-- Dispatch the `reviewer-contract` agent with the full diff and changed files list
-- The agent validates that frontend API calls match backend route definitions
+- Dispatch the `reviewer-contract` agent with the full diff and changed-files list.
 
-If condition not met:
+If not met:
 - Output: "INFO: No cross-boundary changes — skipping contract review"
 
-#### Step 7d: Migration Safety Review (Agent 7 — Conditional)
+#### Step 4d: Migration Safety Review (Conditional)
 
 **Condition:** Diff contains migration files (paths matching `*migration*`, `*alembic*`, `*prisma/migrations*`, `*db/migrate*`, `*knex*migrations*`).
 
-If condition met:
+If met:
 - Output: "Migration files detected — dispatching migration safety reviewer..."
-- Dispatch the `migration-check` agent with the migration file diffs
-- The agent checks for destructive ops, locking risks, and missing rollbacks
+- Dispatch the `migration-check` agent with the migration file diffs.
 
-If condition not met:
+If not met:
 - Output: "INFO: No migration files — skipping migration safety review"
 
-Wait for any conditional agents to complete before proceeding to Step 8.
+Wait for any conditional sub-agents to complete before synthesizing.
 
 ### Key-Files Collection
 
-After all agents complete:
-1. Iterate through agent outputs in dispatch order
-2. For each agent, find the `### Key Files` section
+After all sub-agents complete:
+1. Iterate through sub-agent outputs in dispatch order
+2. For each, find the `### Key Files` section
 3. Extract file paths from the fenced code block
 4. Build a unique list (first occurrence wins, skip duplicates)
 5. Read up to 5 unique files using the Read tool
 6. If a file doesn't exist, skip with warning and continue
-7. Use the collected context for the aggregation phase
+7. Use the collected context for the synthesis phase
 
-### Step 8: Aggregate Findings
+### Step 8: Synthesize Findings
 
-Output: "Consolidating findings from {completed_count} agents (6 core + {conditional_count} conditional)..."
+Output: "Consolidating findings from {completed_count} sub-agents (6 core + {conditional_count} conditional)..."
 
-If any agent failed:
-- Output: "⚠️ {failed_count} agent(s) did not complete: {names}"
+If any sub-agent failed:
+- Output: "⚠️ {failed_count} sub-agent(s) did not complete: {names}"
 - Output: "Tip: Re-run with `--sequential` to retry"
 - Continue with available findings
 
-**Consolidation:**
-
-Combine all findings and assign overall severity:
+**Synthesis** is the orchestrator's job: combine all sub-agent findings and assign
+an overall severity. The orchestrator does not re-derive findings, only merges and
+deduplicates them.
 
 ### Confidence Scoring
 
@@ -347,7 +342,9 @@ Each finding MUST include a confidence score (0-100) alongside its severity:
 - Sort by severity DESC, then confidence DESC within each severity
 
 **Needs Investigation section:**
-BLOCKING findings with confidence < 75 are NEVER silently dropped. They go to a dedicated "Needs Investigation" section at the end of the report with the label "BLOCKING but low-confidence — human must verify."
+BLOCKING findings with confidence < 75 are NEVER silently dropped. They go to a
+dedicated "Needs Investigation" section at the end of the report with the label
+"BLOCKING but low-confidence — human must verify."
 
 **Severity Levels:**
 - **BLOCKING** — Must fix before merge (standards violations, ship-stoppers, failing WI tests)
@@ -450,6 +447,7 @@ Output: "Created WI-PR-001 for: {finding title}"
 
 ## Guidelines
 
+- **The orchestrator coordinates and synthesizes; sub-agents perform the checks.**
 - **Always provide file:line evidence** for all findings
 - **Reference standards docs by name** (e.g., "ARCHITECTURE.md: Layer rules", "CLAUDE.md: Anti-patterns")
 - **Show actual test output** for WI verification

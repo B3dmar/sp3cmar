@@ -234,6 +234,23 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         requires_mcp=("engram",),
         tags=("workflow", "plan", "rendering"),
     ),
+    SkillSpec(
+        slug="pipeline",
+        command="/sp3cmar-pipeline",
+        description="Drive the full dev lifecycle as an orchestrator — specify, plan, implement (fan-out worktrees), verify, review, resolve-bots, risk-routed gate, approve",
+        category="Workflow",
+        providers=("claude", "codex"),
+        triggers=(
+            "pipeline",
+            "run the pipeline",
+            "drive this feature end to end",
+            "orchestrate the lifecycle",
+            "full dev workflow",
+        ),
+        requires_tools=("git", "gh"),
+        requires_mcp=("engram",),
+        tags=("workflow", "orchestrator", "lifecycle"),
+    ),
     # fix and migrate removed — never/rarely used (0 and 3 invocations across 735 sessions)
     # feature, docs, breakdown, implement removed — 0 invocations in April 2026 audit
     # (feature agent retained for indirect invocation; see AGENT_SPECS)
