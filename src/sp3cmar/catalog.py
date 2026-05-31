@@ -289,6 +289,16 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         tags=("review", "github", "merge-gate"),
     ),
     SkillSpec(
+        slug="release",
+        command="/sp3cmar-release",
+        description="Drive engram's scripts/release.sh end-to-end — version bump, release PR, tag",
+        category="Workflow",
+        providers=("claude", "codex"),
+        triggers=("release", "cut a release", "ship a release", "version bump"),
+        requires_tools=("git", "gh"),
+        tags=("workflow", "release"),
+    ),
+    SkillSpec(
         slug="release-notes",
         command="/sp3cmar-release-notes",
         description="Generate release notes from staging-to-main diff",
