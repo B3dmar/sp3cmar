@@ -97,6 +97,23 @@ holds (the Context Contract above). Set it whether you dispatch via the
 `Task` tool or spawn a separate `claude` process, e.g.
 `ENGRAM_HOOK_ROLE=subagent claude ...`.
 
+**Recommended harness-level mechanism (covers in-process Task dispatch):** the
+`ENGRAM_HOOK_ROLE=subagent claude ...` shell prefix only reliably reaches
+sub-agents you launch through a **shell**. An **in-process** `Task`-tool
+sub-agent has no shell, so the export may not reach the engram-hook subprocess
+at all. The durable fix is to set the env var **at the harness level** so hook
+subprocesses inherit it regardless of launch path: add
+`ENGRAM_HOOK_ROLE=subagent` to the global `~/.claude/settings.json` `env` block
+(or the hook config the harness uses to spawn hooks). That way the briefing hook
+early-returns for any sub-agent, shell-launched or in-process.
+
+> **UNVERIFIED:** whether an in-process `Task`-tool sub-agent actually inherits
+> `ENGRAM_HOOK_ROLE` (via either the shell prefix or the `settings.json` `env`
+> block) has **not** been verified end-to-end against the engram-hook
+> subprocess. This is tracked by **#29**. Until it is confirmed (instrument the
+> hook with `ENGRAM_HOOK_DEBUG=1` and dispatch a real `Task` sub-agent), treat
+> in-process propagation as best-effort, not guaranteed.
+
 ## Complexity Router
 
 Fan-out is expensive (multi-agent runs cost roughly 15x the tokens of an inline
@@ -112,6 +129,42 @@ routing decision explicit and state it in the report:
 State the decision verbatim, e.g.: *"Complexity router: 3 independent tasks
 touching disjoint files → FAN-OUT (3 worktrees)."* or *"Complexity router:
 single-file change → single sub-agent, no fan-out."*
+
+## Execution mechanism
+
+The Complexity Router decides **WHEN** to fan out. This section is the **HOW**:
+once the router has chosen a FAN-OUT route (or a single-sub-agent route), drive
+the parallel implement (phase 3) and review (phase 5) sub-agent dispatch through
+the **Workflow tool**, not hand-managed parallel `Agent` / `Task` calls.
+
+Prefer the Workflow tool for the fan-out because it gives you:
+
+- **Deterministic fan-out** — each task maps to one tracked sub-agent run;
+  no silently-dropped or double-dispatched tasks.
+- **Journaling + resume** — the run is recorded, so `--from <phase>` resumes
+  cleanly and a crashed orchestrator can pick the run back up.
+- **Per-agent isolation** — each sub-agent gets its own context and working
+  tree (the implement-phase worktree), so they cannot clobber one another.
+- **Cancellation isolation** — cancelling or failing one sub-agent does not
+  cancel the siblings; the orchestrator still collects the survivors' findings.
+
+This does **not** change the routing decision: the router still says *whether*
+to fan out (and how many ways), the HARD RULE still holds (the orchestrator
+never edits files — every edit goes through a sub-agent), and the Context
+Contract is unchanged (one `## Inherited Context` block per sub-agent; sub-agents
+do not re-pull briefing/search). The Workflow tool is purely the dispatch
+mechanism for the FAN-OUT route.
+
+**Operational lesson — Bash from the orchestrator (and inside sub-agents):**
+
+- Do **NOT** batch cwd-dependent Bash calls into a single parallel batch. Each
+  Bash call is a fresh shell with no shared cwd, and one failed call cancels the
+  whole batch. Run cwd-dependent commands **sequentially** — one call each, or
+  one compound `cd X && a && b`.
+- Prefer `NO_COLOR=1` plus exit-code / `grep -c` / dumped-then-Read assertions
+  over eyeballing a colorized diff. The stdout capture layer can mangle ANSI
+  codes and surface plausible-but-wrong text; trust exit codes and `git show`,
+  not a colorized rendering.
 
 ## Phase Graph (declarative)
 
