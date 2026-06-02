@@ -34,7 +34,7 @@ After write, print the absolute path on a single line so the user can click / pa
 ## Render template
 
 The HTML must be **a single self-contained file**. Allowed external loads:
-- Google Fonts (Inter, JetBrains Mono, Source Serif 4) via `<link>` to `fonts.googleapis.com`
+- (No web fonts. Use the system sans stack inline — nothing loaded from `fonts.googleapis.com`. System fonts render instantly and legibly.)
 - Mermaid via `<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js">` *only if the source contains a flow/sequence/decision tree worth diagramming*
 
 Nothing else loaded from the network. No CSS files, no JS modules, no images.
@@ -54,37 +54,47 @@ Nothing else loaded from the network. No CSS files, no JS modules, no images.
 
 ### Styling
 
-Use 3ngram-design oklch tokens. The renderer should inline these as `:root` CSS custom properties — do **not** `@import` an external stylesheet.
-
-If `~/.claude/skills/3ngram-design/colors_and_type.css` exists, read it and inline the `:root` block plus the semantic colour classes you actually use. If the skill is unavailable, fall back to this minimal palette:
+**Light, neutral, and legible by default.** Clean white cards on an off-white ground, dark navy ink, generous line-height, one blue accent for links/actions. Do **NOT** use a dark theme, a `prefers-color-scheme: dark` block, heavy serif display faces, or low-contrast text — those read as dated and hurt legibility. Inline the palette as `:root` custom properties; do **not** `@import` a stylesheet. Use the **system sans stack** (no web fonts) so text renders instantly. Headings are sans, not serif.
 
 ```css
 :root {
-  --bg: oklch(98% 0.005 250);
-  --surface: oklch(100% 0 0);
-  --text: oklch(20% 0.02 250);
-  --muted: oklch(45% 0.02 250);
-  --accent: oklch(60% 0.18 245);    /* primary action */
-  --success: oklch(65% 0.15 145);
-  --warn: oklch(75% 0.15 75);
-  --danger: oklch(60% 0.20 25);
-  --border: oklch(90% 0.01 250);
-  --code-bg: oklch(96% 0.005 250);
+  --bg: #f4f6fb;        /* page ground */
+  --card: #ffffff;      /* cards, tables, code blocks */
+  --ink: #1c2333;       /* primary text (AA on --bg) */
+  --ink-soft: #5d6680;  /* secondary text */
+  --muted: #8089a0;     /* tertiary / labels / done items */
+  --line: #e4e8f2;      /* hairline borders */
+  --accent: #2563eb;    /* links + primary action (blue) */
+  --ok: #0d9488;        /* shipped / yes (teal) */
+  --warn: #d97706;      /* attention / partial (amber) */
+  --danger: #dc2626;    /* missing / no (red) */
+  --code-bg: #eef1f7;
+  --shadow: 0 1px 2px rgba(20,30,60,.05), 0 10px 28px rgba(20,30,60,.07);
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: oklch(15% 0.01 250);
-    --surface: oklch(20% 0.015 250);
-    --text: oklch(95% 0.005 250);
-    --muted: oklch(70% 0.02 250);
-    --border: oklch(30% 0.01 250);
-    --code-bg: oklch(25% 0.01 250);
-  }
+* { box-sizing: border-box; }
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink); line-height: 1.6; max-width: 980px; margin: 0 auto; padding: 0 24px 4rem;
+  -webkit-font-smoothing: antialiased;
+  background:
+    radial-gradient(1100px 520px at 12% -8%, #e9efff 0%, rgba(233,239,255,0) 60%),
+    radial-gradient(900px 460px at 100% 0%, #e6fbf6 0%, rgba(230,251,246,0) 55%),
+    var(--bg);
 }
-body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); max-width: 880px; margin: 2rem auto; padding: 0 1.5rem; line-height: 1.55; }
-h1, h2, h3 { font-family: 'Source Serif 4', Georgia, serif; }
-code, pre { font-family: 'JetBrains Mono', ui-monospace, monospace; background: var(--code-bg); }
+h1 { font-size: clamp(26px,3.4vw,38px); letter-spacing: -.025em; margin: 1.6rem 0 .4rem; }
+h2 { font-size: 21px; letter-spacing: -.015em; margin: 2.4rem 0 .6rem; border-bottom: 1px solid var(--line); padding-bottom: .4rem; }
+h3 { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); margin: 1.4rem 0 .5rem; }
+a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
+table, pre { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+table { border-collapse: separate; border-spacing: 0; width: 100%; overflow: hidden; margin: .8rem 0; font-size: 13.5px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); font-weight: 700; background: #fafbfe; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .88em; background: var(--code-bg); padding: 1px 5px; border-radius: 5px; }
+pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; padding: 14px 16px; font-size: 12.5px; line-height: 1.5; overflow-x: auto; }
+.badge { font-size: 10px; font-weight: 700; letter-spacing: .04em; padding: 2px 7px; border-radius: 999px; border: 1px solid currentColor; }
 ```
+
+Keep the top bar and any cards on `var(--card)` with `var(--shadow)`; reserve color for meaning (accent = action/link, ok = done/yes, warn = partial, danger = missing). Everything else stays ink-on-paper.
 
 ### Checkbox persistence (copy-paste verbatim, adjust storage key)
 
