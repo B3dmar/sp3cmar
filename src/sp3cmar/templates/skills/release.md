@@ -71,7 +71,21 @@ This skill is engram-specific: it assumes engram's repo layout (`scripts/release
   - Push it: `git push origin v<new-version>`.
 - Confirm the tag is on the remote (`git ls-remote --tags origin v<new-version>`). If the push failed, STOP and surface the error.
 
-### 8. Summarize
+### 8. Associate shipped issues with the release (HALT on failure)
+
+With the tag on `main`, set the project `Release` field on every issue that shipped in this release, so the board shows which version carried each issue. This is the single source of truth for Release association (there is no GitHub Actions equivalent).
+
+- **Compute the range.** The previous release tag is the greatest semver `v*.*.*` tag strictly below `v<new-version>` — sort `git tag --list 'v*.*.*'` by *semver*, not creation date. Range = `<prev tag>..v<new-version>` (or just `v<new-version>` if there is no prior tag).
+- **Resolve shipped issues** from that range:
+  - *PR links (authoritative):* for each `Merge pull request #N` in `git log <range> --pretty=%s`, read that PR's `closingIssuesReferences` (GraphQL) → issue numbers.
+  - *Text refs (supplemental):* `Closes/Fixes/Resolves #N` in `git log <range> --pretty=%B`.
+  - Keep only **closed, non-PR issues** (drop open issues, PRs, and not-found).
+- **Confirm with the user before writing.** Show the resolved list (number + title) targeting `Release=v<new-version>`. Call out any that read as retrospective *mentions* rather than this-release work — e.g. a commit saying `from closed #N` will false-match the text regex. Let the user deselect false positives. HALT if they reject the set.
+- **Ensure the option exists.** The field is the `Release` single-select on project `B3dmar/projects/1` (project id `PVT_kwDOD6Qg6M4BUfKe`). Query its options; if `v<new-version>` is missing, append it with `updateProjectV2Field`, passing **all existing options back with their `id` and `color`** plus the new `{name: "v<new-version>", color: PURPLE}`. Omitting the ids recreates the options and orphans every existing Release value — never do that.
+- **Set the field.** For each confirmed issue, find its project item (add it to the project if missing), then `updateProjectV2ItemFieldValue` to `v<new-version>`.
+- Report the count of issues tagged. HALT and surface any GraphQL error.
+
+### 9. Summarize
 
 Output a structured release summary, reporting each step's outcome:
 
@@ -82,6 +96,7 @@ Output a structured release summary, reporting each step's outcome:
 - **release.sh**: <ok | failed>
 - **Release PR**: <url> (<merged | open>)
 - **Tag**: v<new-version> <pushed | pending>
+- **Release field**: <N> issues set to v<new-version> on the board
 - **Next**: [e.g. /sp3cmar-release-notes --tag v<new-version> --publish to publish GitHub release notes]
 ```
 
