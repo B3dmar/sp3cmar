@@ -105,7 +105,7 @@ Generate N batched worktree prompts (default: 6) by cross-referencing available 
    - Skip items already covered by active worktrees
 
 3. **Output** for each worktree (orchestrator pulls context; sub-agents never do):
-   For each worktree, run ONE `mcp__3ngram__search(topic="<TOPIC KEYWORDS FROM THIS WORKTREE>", brief=true, limit=8)` and paste the top hits into the Inherited Context block below. The orchestrator already holds blockers/commitments from step 1 — sub-agents must not re-fetch any of it.
+   For each worktree, run ONE `mcp__3ngram-prod-oss__search(topic="<TOPIC KEYWORDS FROM THIS WORKTREE>", brief=true, limit=8)` and paste the top hits into the Inherited Context block below. The orchestrator already holds blockers/commitments from step 1 — sub-agents must not re-fetch any of it.
    ```
    ## Worktree N: <name>
    Branch: <type>/<slug>
@@ -132,11 +132,11 @@ Generate N batched worktree prompts (default: 6) by cross-referencing available 
    If a line above indicates the work is blocked (e.g. "pipeline X broken, don't add rules until fixed"), stop and report back instead of coding around it.
 
    Context rules:
-   - Do NOT call `mcp__3ngram__briefing` or `mcp__3ngram__search` — your context is the Inherited Context block above; the orchestrator already pulled it. Re-pulling wastes tokens and duplicates the orchestrator's work.
-   - Escape hatch: only if a SPECIFIC unknown surfaces mid-task that is NOT covered above, make one targeted `mcp__3ngram__get_facts` / `mcp__3ngram__search` call, and state in your report why the inherited context was insufficient.
+   - Do NOT call `mcp__3ngram-prod-oss__briefing` or `mcp__3ngram-prod-oss__search` — your context is the Inherited Context block above; the orchestrator already pulled it. Re-pulling wastes tokens and duplicates the orchestrator's work.
+   - Escape hatch: only if a SPECIFIC unknown surfaces mid-task that is NOT covered above, make one targeted `mcp__3ngram-prod-oss__get_facts` / `mcp__3ngram-prod-oss__search` call, and state in your report why the inherited context was insufficient.
 
    Before opening the PR (PUSH findings back):
-   - If you discovered a new pattern, made a non-obvious decision, or hit a gotcha, call `mcp__3ngram__remember` with the right classification (pattern | decision | commitment) AND `tags: ["subagent", "branch:<slug>"]`, prefixing the topic with the branch slug for attribution. One call per sub-agent minimum unless the task was purely mechanical.
+   - If you discovered a new pattern, made a non-obvious decision, or hit a gotcha, call `mcp__3ngram-prod-oss__remember` with the right classification (pattern | decision | commitment) AND `tags: ["subagent", "branch:<slug>"]`, prefixing the topic with the branch slug for attribution. One call per sub-agent minimum unless the task was purely mechanical.
 
    If 3ngram MCP is unavailable, skip the remember step with a one-line note and continue.
    <END DIRECTIVES>

@@ -58,18 +58,18 @@ dimension, etc. Sub-agents are governed by the **Context Contract** below.
 
 Context flows **one way, pulled once**:
 
-1. **Orchestrator pulls context once** at phase 0: a `mcp__3ngram__search` over
+1. **Orchestrator pulls context once** at phase 0: a `mcp__3ngram-prod-oss__search` over
    the topic, the relevant GitHub state (issue, linked PRs, CI), and the relevant
    code (files, prior patterns). This is the `/sp3cmar-context` phase-0 pull.
 2. **Orchestrator passes an `## Inherited Context` block** into every sub-agent
    prompt. That block carries the distilled findings the sub-agent needs:
    acceptance criteria, relevant files, prior decisions, the branch slug.
 3. **Sub-agents do NOT call briefing/search themselves.** They do not invoke
-   `mcp__3ngram__briefing` or `mcp__3ngram__search` for direction. They may read
+   `mcp__3ngram-prod-oss__briefing` or `mcp__3ngram-prod-oss__search` for direction. They may read
    the repo. This avoids N sub-agents each re-pulling the same context (cost and
    drift).
 4. **Sub-agents PUSH findings back to 3ngram** when done, via
-   `mcp__3ngram__remember`, tagged `["subagent", "branch:<slug>"]` so the
+   `mcp__3ngram-prod-oss__remember`, tagged `["subagent", "branch:<slug>"]` so the
    orchestrator (and future sessions) can recover what each sub-agent learned.
 
 The orchestrator prompt template for a sub-agent looks like:

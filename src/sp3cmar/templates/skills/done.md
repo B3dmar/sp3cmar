@@ -39,12 +39,12 @@ Read `engram://commitments` to identify any commitments that were completed duri
 
 Use the Engram MCP tools to store structured memories with explicit classification:
 
-- `mcp__3ngram__remember` with classification `decision` — for architectural choices and tradeoffs
-- `mcp__3ngram__remember` with classification `pattern` — for coding patterns, conventions, gotchas
-- `mcp__3ngram__remember` with classification `context` — for project state, environment details
-- `mcp__3ngram__remember` with classification `commitment` — for things promised for future sessions
+- `mcp__3ngram-prod-oss__remember` with classification `decision` — for architectural choices and tradeoffs
+- `mcp__3ngram-prod-oss__remember` with classification `pattern` — for coding patterns, conventions, gotchas
+- `mcp__3ngram-prod-oss__remember` with classification `context` — for project state, environment details
+- `mcp__3ngram-prod-oss__remember` with classification `commitment` — for things promised for future sessions
 
-For any commitments completed during this session: `mcp__3ngram__resolve` with the memory ID.
+For any commitments completed during this session: `mcp__3ngram-prod-oss__resolve` with the memory ID.
 
 If Engram MCP is not connected, output the debrief summary as text so the user can capture it manually.
 

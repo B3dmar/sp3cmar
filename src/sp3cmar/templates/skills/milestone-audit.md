@@ -60,7 +60,7 @@ GitHub + 3ngram queries.
 Consume its `### Issues`, `### Open PRs`, and `### All-State PRs` blocks
 instead of re-running `gh issue list` or `gh pr list`, and its `### 3ngram`
 + `### Memory Search` blocks instead of re-reading the `engram://`
-resources or re-running `mcp__3ngram__search`.
+resources or re-running `mcp__3ngram-prod-oss__search`.
 
 Then layer on this skill's **milestone-specific** gathering inline:
 - Narrow the issue set to the resolved milestone:

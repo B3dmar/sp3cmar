@@ -31,8 +31,8 @@ Common flags (supported by most subcommands):
 
 Before dispatching any reviewer agent, gather prior institutional memory so findings are framed against known decisions, not re-discovered from scratch:
 
-1. Call `mcp__3ngram__briefing` with `brief=true` and `sections=["blockers","stale","recent_decisions"]` — surfaces active blockers, stale commitments, and recent architectural decisions in <5KB.
-2. Call `mcp__3ngram__search` with a topic summary of the review scope (e.g. for `codebase`: "architecture modularity contract drift"; for `kill`: "security reliability cost ship-stopper"). Limit 8, `brief=true`.
+1. Call `mcp__3ngram-prod-oss__briefing` with `brief=true` and `sections=["blockers","stale","recent_decisions"]` — surfaces active blockers, stale commitments, and recent architectural decisions in <5KB.
+2. Call `mcp__3ngram-prod-oss__search` with a topic summary of the review scope (e.g. for `codebase`: "architecture modularity contract drift"; for `kill`: "security reliability cost ship-stopper"). Limit 8, `brief=true`.
 3. If any returned memory indicates a blocker on the current scope (e.g. "pipeline X is broken, do not add rules until fixed"), pause and surface to the user before dispatch.
 4. Pass the briefing + search results to every reviewer agent as "prior decisions / known blockers" context. Reviewers should reference a relevant memory ID instead of re-flagging a known accepted pattern.
 

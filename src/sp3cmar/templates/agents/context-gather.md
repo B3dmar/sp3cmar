@@ -104,7 +104,7 @@ NOT a substitute for a semantic keyword search. Run a free-text search
 keyed to the caller's `--search` terms:
 
 ```
-mcp__3ngram__search(query="<--search terms>")
+mcp__3ngram-prod-oss__search(query="<--search terms>")
 ```
 
 Surface the top matching memories (decisions, scope notes, release
