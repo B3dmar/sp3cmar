@@ -58,18 +58,18 @@ dimension, etc. Sub-agents are governed by the **Context Contract** below.
 
 Context flows **one way, pulled once**:
 
-1. **Orchestrator pulls context once** at phase 0: a `mcp__3ngram__search` over
+1. **Orchestrator pulls context once** at phase 0: a `mcp__3ngram-prod-oss__search` over
    the topic, the relevant GitHub state (issue, linked PRs, CI), and the relevant
    code (files, prior patterns). This is the `/sp3cmar-context` phase-0 pull.
 2. **Orchestrator passes an `## Inherited Context` block** into every sub-agent
    prompt. That block carries the distilled findings the sub-agent needs:
    acceptance criteria, relevant files, prior decisions, the branch slug.
 3. **Sub-agents do NOT call briefing/search themselves.** They do not invoke
-   `mcp__3ngram__briefing` or `mcp__3ngram__search` for direction. They may read
+   `mcp__3ngram-prod-oss__briefing` or `mcp__3ngram-prod-oss__search` for direction. They may read
    the repo. This avoids N sub-agents each re-pulling the same context (cost and
    drift).
 4. **Sub-agents PUSH findings back to 3ngram** when done, via
-   `mcp__3ngram__remember`, tagged `["subagent", "branch:<slug>"]` so the
+   `mcp__3ngram-prod-oss__remember`, tagged `["subagent", "branch:<slug>"]` so the
    orchestrator (and future sessions) can recover what each sub-agent learned.
 
 The orchestrator prompt template for a sub-agent looks like:
@@ -87,7 +87,7 @@ repo). PUSH a finding back to 3ngram when done, tagged ["subagent","branch:<slug
 ```
 
 **Sub-agent hook environment:** when launching a sub-agent, export
-`ENGRAM_HOOK_ROLE=subagent` in its environment. The engram-hook briefing
+`ENGRAM_HOOK_ROLE=subagent` in its environment. The 3ngram-hook briefing
 binary early-returns (skips the 3ngram auto-pull) when
 `ENGRAM_HOOK_ROLE=subagent` OR the cwd is a secondary worktree.
 Task-dispatched sub-agents inherit the orchestrator's main-worktree cwd, so
@@ -100,7 +100,7 @@ holds (the Context Contract above). Set it whether you dispatch via the
 **Recommended harness-level mechanism (covers in-process Task dispatch):** the
 `ENGRAM_HOOK_ROLE=subagent claude ...` shell prefix only reliably reaches
 sub-agents you launch through a **shell**. An **in-process** `Task`-tool
-sub-agent has no shell, so the export may not reach the engram-hook subprocess
+sub-agent has no shell, so the export may not reach the 3ngram-hook subprocess
 at all. The durable fix is to set the env var **at the harness level** so hook
 subprocesses inherit it regardless of launch path: add
 `ENGRAM_HOOK_ROLE=subagent` to the global `~/.claude/settings.json` `env` block
@@ -109,7 +109,7 @@ early-returns for any sub-agent, shell-launched or in-process.
 
 > **UNVERIFIED:** whether an in-process `Task`-tool sub-agent actually inherits
 > `ENGRAM_HOOK_ROLE` (via either the shell prefix or the `settings.json` `env`
-> block) has **not** been verified end-to-end against the engram-hook
+> block) has **not** been verified end-to-end against the 3ngram-hook
 > subprocess. This is tracked by **#29**. Until it is confirmed (instrument the
 > hook with `ENGRAM_HOOK_DEBUG=1` and dispatch a real `Task` sub-agent), treat
 > in-process propagation as best-effort, not guaranteed.

@@ -10,9 +10,9 @@ Ready-to-use Claude Code skills that depend on 3ngram MCP tools and resources:
 
 | Skill | 3ngram Tools Used | Description |
 |-------|-------------------|-------------|
-| `morning-briefing.md` | `engram://overdue`, `engram://blockers`, `engram://commitments`, `search_memories` | Session startup with full context |
+| `morning-briefing.md` | `engram://overdue`, `engram://blockers`, `engram://commitments`, `search` | Session startup with full context |
 | `session-debrief.md` | `remember`, `resolve`, `engram://commitments` | Session close with memory extraction |
-| `doc-audit.md` | `engram://commitments`, `search_memories` | Cross-ref docs with tracked decisions |
+| `doc-audit.md` | `engram://commitments`, `search` | Cross-ref docs with tracked decisions |
 | `bot-adapter.md` | `remember` (optional commitment) | Scaffold a new chat-platform bot adapter under `engram/backend/src/engram/bots/` |
 
 ### Examples (`examples/`)
@@ -21,7 +21,7 @@ Cookbook patterns for building your own 3ngram-powered skills:
 
 | Example | Description |
 |---------|-------------|
-| `custom-recall.md` | How to build skills that use `search_memories`, `search_content`, and resources |
+| `custom-recall.md` | How to build skills that use the unified `search`, `remember`, and resources |
 | `memory-hooks.md` | Hook patterns for auto-capturing memories |
 
 ## Installation

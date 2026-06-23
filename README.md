@@ -79,7 +79,7 @@ uv tool uninstall sp3cmar
 | `/sp3cmar-review` | Unified code review (sub-types: `all`, `pr`, `codebase`, `kill`, `test`, `debt`, `deps`, `env`, `contract`) |
 | `/sp3cmar-seo-geo` | Technical SEO/GEO audit |
 | `/sp3cmar-release-notes` | Generate release notes |
-| `/sp3cmar-release` | Cut an engram release end-to-end — version bump, PR, tag |
+| `/sp3cmar-release` | Cut a 3ngram release end-to-end — version bump, PR, tag |
 
 ### Cowork
 
@@ -94,7 +94,7 @@ uv tool uninstall sp3cmar
 |-------|-------------|
 | `session-debrief` | Session close with memory extraction |
 | `doc-audit` | Cross-ref docs with 3ngram decisions |
-| `bot-adapter` | Scaffold a new chat-platform bot adapter for engram |
+| `bot-adapter` | Scaffold a new chat-platform bot adapter for 3ngram |
 
 ## Agents
 

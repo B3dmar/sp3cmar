@@ -124,7 +124,7 @@ Set status, type, priority, and area fields if the project schema exposes them â
 If 3ngram MCP is connected, persist a commitment so future sessions surface this issue:
 
 ```
-mcp__3ngram__remember(
+mcp__3ngram-prod-oss__remember(
   text="Created issue #<N>: <title> (<type>/<priority>/<area>)",
   classification="commitment",
   scope="work"

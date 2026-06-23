@@ -139,7 +139,7 @@ gh pr create --draft --base staging --title "feat(bots): <platform> adapter scaf
 If 3ngram MCP is connected, save a commitment so follow-up wiring (real credentials, smoke against the live platform, admin UI) doesn't get forgotten:
 
 ```
-mcp__3ngram__remember(
+mcp__3ngram-prod-oss__remember(
   text="Scaffolded <platform> bot adapter (PR #<N>). Next: wire real credentials, end-to-end smoke, optional admin UI.",
   classification="commitment",
   scope="work"

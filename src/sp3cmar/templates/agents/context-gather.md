@@ -85,7 +85,7 @@ labels, and (when GitHub issue hierarchy is in use) parent/sub-issue links.
 
 ### 4. 3ngram context (`engram`)
 
-Skip if `--skip-engram` is passed or if Engram MCP is not connected.
+Skip if `--skip-engram` is passed or if 3ngram MCP is not connected.
 
 Read these MCP resources and filter to the current project:
 - `engram://blockers` — active blockers
@@ -93,7 +93,7 @@ Read these MCP resources and filter to the current project:
 - `engram://overdue` — overdue items
 - `engram://stale` — stale commitments (7+ days, no activity)
 
-If Engram MCP is unavailable (tool missing or error), note it in one line
+If 3ngram MCP is unavailable (tool missing or error), note it in one line
 and continue — do not block.
 
 ### 4b. Free-text memory search (`search`) — opt-in
@@ -104,11 +104,11 @@ NOT a substitute for a semantic keyword search. Run a free-text search
 keyed to the caller's `--search` terms:
 
 ```
-mcp__3ngram__search(query="<--search terms>")
+mcp__3ngram-prod-oss__search(query="<--search terms>")
 ```
 
 Surface the top matching memories (decisions, scope notes, release
-blockers) with their ids. If Engram MCP is unavailable, note it in one
+blockers) with their ids. If 3ngram MCP is unavailable, note it in one
 line and continue.
 
 ## Output (the shared payload)

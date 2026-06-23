@@ -10,8 +10,8 @@ Audit project documentation for drift against 3ngram-tracked commitments and dec
 
 ### 1. Load 3ngram Context
 - `engram://commitments` — all open commitments
-- `mcp__3ngram__search` with topic "decision", `memory_type="decision"`, and project/scope matching this project
-- `mcp__3ngram__search` with topic "architecture", `memory_type="decision"`, and project/scope matching this project
+- `mcp__3ngram-prod-oss__search` with topic "decision", `memory_type="decision"`, and project/scope matching this project
+- `mcp__3ngram-prod-oss__search` with topic "architecture", `memory_type="decision"`, and project/scope matching this project
 
 ### 2. Scan Documentation
 Identify key documentation files:

@@ -11,8 +11,8 @@ Concept origin: Thariq Shihipar (Anthropic), *How I AI* podcast — replacing ma
 `$ARGUMENTS` accepts (resolved in this order):
 
 - **`<path-to-markdown>`** — explicit `.md` file path (absolute, or relative to `cwd`)
-- **`<memory-id>`** — numeric ID → pull via `mcp__3ngram__search(memory_ids=[N])` and render the memory body
-- **`<topic-string>`** — non-numeric, no `.md` extension → `mcp__3ngram__search(query="<topic>", limit=5)` and render the top hit (confirm with user before rendering if the top score is below 0.6)
+- **`<memory-id>`** — numeric ID → pull via `mcp__3ngram-prod-oss__search(memory_ids=[N])` and render the memory body
+- **`<topic-string>`** — non-numeric, no `.md` extension → `mcp__3ngram-prod-oss__search(query="<topic>", limit=5)` and render the top hit (confirm with user before rendering if the top score is below 0.6)
 - **(no arg)** — render the most-recent `~/.claude/plans/*.md` by `mtime`
 
 Optional flags (postfix):
@@ -138,7 +138,7 @@ If any check fails, print the failure and the output path with a "⚠ verificati
 
 ## 3ngram capture
 
-If this is the **first** render in a session, call `mcp__3ngram__remember` once with:
+If this is the **first** render in a session, call `mcp__3ngram-prod-oss__remember` once with:
 - `topic`: `Used /sp3cmar-html-plan on <source>`
 - `memory_type`: `event`
 - `tags`: `["sp3cmar-html-plan", "html-rendering"]`

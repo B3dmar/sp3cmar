@@ -17,7 +17,7 @@ Audit a GitHub milestone for scope drift, issue hygiene, parent/child consistenc
 1. Default mode is read-only. Do not mutate GitHub, files, branches, or milestones unless `--apply` is present and the user approves the exact change list.
 2. Do not infer issue hierarchy from title alone when GitHub parent/sub-issue metadata is available. Prefer GitHub's structured fields.
 3. Distinguish release blockers from advisory noise. Failed required checks and unresolved dependencies block; stale comments, optional checks, and old advisory failures do not.
-4. Use 3ngram/Engram context when available unless `--quick` is passed.
+4. Use 3ngram context when available unless `--quick` is passed.
 5. Every finding must cite an issue, PR, file path, memory id, or command result.
 
 ## Steps
@@ -60,7 +60,7 @@ GitHub + 3ngram queries.
 Consume its `### Issues`, `### Open PRs`, and `### All-State PRs` blocks
 instead of re-running `gh issue list` or `gh pr list`, and its `### 3ngram`
 + `### Memory Search` blocks instead of re-reading the `engram://`
-resources or re-running `mcp__3ngram__search`.
+resources or re-running `mcp__3ngram-prod-oss__search`.
 
 Then layer on this skill's **milestone-specific** gathering inline:
 - Narrow the issue set to the resolved milestone:

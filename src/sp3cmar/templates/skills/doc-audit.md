@@ -10,7 +10,7 @@ Cross-reference project tracking artifacts and report contradictions, stale item
 - *(empty)* — full audit of all sources
 - `roadmap` — audit roadmap.md only
 - `issues` — audit GitHub issues only
-- `commitments` — audit Engram commitments only
+- `commitments` — audit 3ngram commitments only
 
 ## Steps
 
@@ -28,7 +28,7 @@ Then gather this skill's **doc-specific** sources inline (in parallel):
 - **Roadmap**: Read `roadmap.md` (or equivalent). Extract all checkbox items with their status (done/open) and any issue references
 - **Backlog**: Read `backlog.md` (if exists). Extract entries with issue references
 
-Use the shared bundle for GitHub issues (open/closed, labels) and Engram
+Use the shared bundle for GitHub issues (open/closed, labels) and 3ngram
 commitments/stale; pair them with the roadmap/backlog above for the
 cross-reference in the next step.
 
@@ -42,7 +42,7 @@ Check for these drift patterns:
 | **Orphaned issues** | Closed on GitHub but listed as open in docs |
 | **Duplicate tracking** | Same work tracked in multiple places with different status |
 | **Missing issues** | Roadmap items with no corresponding GitHub issue |
-| **Stale commitments** | Engram commitments with no recent activity (7+ days) |
+| **Stale commitments** | 3ngram commitments with no recent activity (7+ days) |
 | **Unlabeled issues** | Open issues missing area/type/priority labels |
 
 ### 3. Report
