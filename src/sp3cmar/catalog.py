@@ -118,7 +118,7 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         category="Workflow",
         providers=("claude", "codex"),
         triggers=("done", "debrief", "wrap up"),
-        requires_mcp=("engram",),
+        requires_mcp=("3ngram",),
         tags=("workflow", "memory"),
     ),
     SkillSpec(
@@ -128,7 +128,7 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         category="Workflow",
         providers=("claude", "codex"),
         triggers=("post-merge", "after merge", "cascade"),
-        requires_mcp=("engram",),
+        requires_mcp=("3ngram",),
         tags=("workflow", "tracking"),
     ),
     SkillSpec(
@@ -148,7 +148,7 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         category="Workflow",
         providers=("claude", "codex"),
         triggers=("doc audit", "drift", "tracking"),
-        requires_mcp=("engram",),
+        requires_mcp=("3ngram",),
         tags=("docs", "audit"),
     ),
     SkillSpec(
@@ -159,7 +159,7 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         providers=("claude", "codex"),
         triggers=("milestone audit", "release scope", "issue hygiene", "epic links"),
         requires_tools=("git", "gh"),
-        requires_mcp=("engram",),
+        requires_mcp=("3ngram",),
         tags=("workflow", "github", "audit"),
     ),
     SkillSpec(
@@ -169,7 +169,7 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         category="Workflow",
         providers=("claude", "codex"),
         triggers=("workflow audit", "automation opportunities"),
-        requires_mcp=("engram",),
+        requires_mcp=("3ngram",),
         tags=("workflow", "automation"),
     ),
     SkillSpec(
@@ -179,7 +179,7 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         category="Workflow",
         providers=("claude", "codex"),
         triggers=("memory audit", "capture coverage", "3ngram audit"),
-        requires_mcp=("engram",),
+        requires_mcp=("3ngram",),
         tags=("workflow", "memory", "audit"),
     ),
     SkillSpec(
@@ -190,7 +190,7 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         providers=("claude", "codex"),
         triggers=("staging audit", "pre-merge audit"),
         requires_tools=("git", "gh"),
-        requires_mcp=("engram",),
+        requires_mcp=("3ngram",),
         tags=("workflow", "release"),
     ),
     SkillSpec(
@@ -211,7 +211,7 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         providers=("claude", "codex"),
         triggers=("context", "briefing", "what do we know about", "prior decisions"),
         requires_tools=("git", "gh"),
-        requires_mcp=("engram",),
+        requires_mcp=("3ngram",),
         tags=("workflow", "memory", "research"),
     ),
     SkillSpec(
@@ -231,7 +231,7 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
         category="Workflow",
         providers=("claude", "codex"),
         triggers=("html plan", "render plan as html", "visual plan", "plan artifact"),
-        requires_mcp=("engram",),
+        requires_mcp=("3ngram",),
         tags=("workflow", "plan", "rendering"),
     ),
     SkillSpec(
@@ -248,7 +248,7 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
             "full dev workflow",
         ),
         requires_tools=("git", "gh"),
-        requires_mcp=("engram",),
+        requires_mcp=("3ngram",),
         tags=("workflow", "orchestrator", "lifecycle"),
     ),
     # fix and migrate removed — never/rarely used (0 and 3 invocations across 735 sessions)
@@ -291,7 +291,7 @@ CORE_SKILL_SPECS: tuple[SkillSpec, ...] = (
     SkillSpec(
         slug="release",
         command="/sp3cmar-release",
-        description="Drive engram's scripts/release.sh end-to-end — version bump, release PR, tag",
+        description="Drive 3ngram's scripts/release.sh end-to-end — version bump, release PR, tag",
         category="Workflow",
         providers=("claude", "codex"),
         triggers=("release", "cut a release", "ship a release", "version bump"),
@@ -438,26 +438,26 @@ ENGRAM_EXTENSION_SPECS: tuple[ExtensionSpec, ...] = (
     ExtensionSpec(
         slug="session-debrief",
         description="[DEPRECATED] Merged into /sp3cmar-done",
-        channel="engram",
+        channel="3ngram",
         providers=("claude",),
         requires_mcp=("3ngram",),
-        tags=("engram", "memory"),
+        tags=("3ngram", "memory"),
     ),
     ExtensionSpec(
         slug="doc-audit",
         description="Cross-ref docs with 3ngram decisions",
-        channel="engram",
+        channel="3ngram",
         providers=("claude",),
         requires_mcp=("3ngram",),
-        tags=("engram", "docs"),
+        tags=("3ngram", "docs"),
     ),
     ExtensionSpec(
         slug="bot-adapter",
-        description="Scaffold a new chat-platform bot adapter for engram (Slack, Telegram, WhatsApp, Teams, etc.)",
-        channel="engram",
+        description="Scaffold a new chat-platform bot adapter for 3ngram (Slack, Telegram, WhatsApp, Teams, etc.)",
+        channel="3ngram",
         providers=("claude",),
         requires_mcp=("3ngram",),
-        tags=("engram", "bots", "scaffold"),
+        tags=("3ngram", "bots", "scaffold"),
     ),
 )
 

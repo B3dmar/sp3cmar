@@ -43,7 +43,7 @@ Manage git worktrees for parallel development. Worktrees live inside the repo at
    When the session in this worktree is itself a **sub-agent** launched by
    an orchestrator (rather than an interactive session), export
    `ENGRAM_HOOK_ROLE=subagent` for it, e.g.
-   `ENGRAM_HOOK_ROLE=subagent claude ...`. The engram-hook briefing binary
+   `ENGRAM_HOOK_ROLE=subagent claude ...`. The 3ngram-hook briefing binary
    early-returns (skips the 3ngram auto-pull) when
    `ENGRAM_HOOK_ROLE=subagent` OR the cwd is a secondary worktree; setting
    the env var is the belt-and-suspenders for Task-dispatched sub-agents
@@ -55,7 +55,7 @@ Manage git worktrees for parallel development. Worktrees live inside the repo at
    the recommended harness-level mechanism is to set `ENGRAM_HOOK_ROLE=subagent`
    in the global `~/.claude/settings.json` `env` block so hook subprocesses
    inherit it on any launch path. Whether in-process `Task` dispatch actually
-   propagates the var to the engram-hook subprocess is **UNVERIFIED** and
+   propagates the var to the 3ngram-hook subprocess is **UNVERIFIED** and
    tracked by **#29** (verify with `ENGRAM_HOOK_DEBUG=1` + a real `Task` run).
 
 ### `done <branch-name>`
@@ -117,7 +117,7 @@ Generate N batched worktree prompts (default: 6) by cross-referencing available 
    <STANDARD SUB-AGENT DIRECTIVES — injected verbatim into every generated prompt>
    ## Hook environment
    When launching this sub-agent, export `ENGRAM_HOOK_ROLE=subagent` in its
-   environment (e.g. `ENGRAM_HOOK_ROLE=subagent claude ...`). The engram-hook
+   environment (e.g. `ENGRAM_HOOK_ROLE=subagent claude ...`). The 3ngram-hook
    briefing binary skips the 3ngram auto-pull when `ENGRAM_HOOK_ROLE=subagent`
    OR the cwd is a secondary worktree; the env var is the belt-and-suspenders
    for Task-dispatched sub-agents that inherit the orchestrator's

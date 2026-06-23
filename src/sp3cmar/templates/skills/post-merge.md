@@ -55,7 +55,7 @@ If base branch is `main`:
   close it with `gh issue close <#>`
 - The `project-sync.yml` workflow automatically sets their Project status to "Done"
 
-### 5. Resolve Engram commitments
+### 5. Resolve 3ngram commitments
 
 - Get open commitments:
   - **If you are already running inside an audit** that dispatched the
@@ -66,7 +66,7 @@ If base branch is `main`:
     a full `context-gather` sub-agent.
 - Match commitments to the shipped work (by topic, issue number, or keyword)
 - Resolve matched commitments using `resolve()` tool
-- If Engram MCP is not connected, skip this step and note it
+- If 3ngram MCP is not connected, skip this step and note it
 
 ### 6. Summary
 

@@ -9,7 +9,7 @@ Audit the current project's readiness to merge staging into main. Aggregate open
 `$ARGUMENTS` controls behavior:
 - *(empty)* — full audit with roadmap
 - `quick` — delta + blockers only, skip PR deep-dive
-- `--skip-engram` — skip 3ngram/Engram memory queries
+- `--skip-engram` — skip 3ngram memory queries
 
 ## Steps
 

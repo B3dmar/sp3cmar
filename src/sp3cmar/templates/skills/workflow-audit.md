@@ -121,4 +121,4 @@ Separate into:
 2. Do not fabricate numbers — all counts must come from actual data.
 3. Be specific in recommendations — name the command, write the CLAUDE.md rule, specify the hook.
 4. Always show evidence (prompt counts, session examples) for each recommendation.
-5. If Engram MCP is available, check for existing commitments related to workflow improvements.
+5. If 3ngram MCP is available, check for existing commitments related to workflow improvements.
